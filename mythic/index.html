@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1a1714">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Mythic GME 2e Companion</title>
+<style>
+  :root{
+    --bg:#1a1714; --panel:#242019; --card:#2e281f; --border:#3d3529;
+    --accent:#c9a84c; --accent-dim:#8b7636; --text:#e8dcc8; --text-dim:#9b8e78;
+    --yes:#5a9e6f; --no:#b85450; --ex-yes:#7cd693; --ex-no:#e07070; --event:#3a2a1a;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0; padding:0;}
+  body{
+    font-family:'Palatino Linotype','Book Antiqua',Palatino,Georgia,serif;
+    background:var(--bg); color:var(--text); font-size:15px; line-height:1.45;
+    min-height:100vh; display:flex; flex-direction:column;
+    padding-bottom:env(safe-area-inset-bottom);
+  }
+  header{
+    background:linear-gradient(135deg,var(--panel),var(--card));
+    border-bottom:2px solid var(--accent);
+    padding:calc(14px + env(safe-area-inset-top)) 20px 12px; text-align:center;
+  }
+  header h1{margin:0; font-size:21px; letter-spacing:2px; color:var(--accent); text-transform:uppercase;}
+  header .sub{font-size:10px; letter-spacing:4px; color:var(--text-dim); text-transform:uppercase; margin-top:3px;}
+  nav{display:flex; background:var(--panel); border-bottom:1px solid var(--border); position:sticky; top:0; z-index:10;}
+  nav button{
+    flex:1; padding:11px 0; font:inherit; font-size:11px; font-weight:700; letter-spacing:1px;
+    text-transform:uppercase; background:none; border:none; border-bottom:2px solid transparent;
+    color:var(--text-dim); cursor:pointer;
+  }
+  nav button.active{color:var(--accent); border-bottom-color:var(--accent);}
+  main{flex:1; padding:14px 16px 40px; max-width:640px; width:100%; margin:0 auto;}
+  .hidden{display:none;}
+  .sect{margin-bottom:18px;}
+  .sect-title{
+    font-size:10px; font-weight:700; letter-spacing:2px; text-transform:uppercase;
+    color:var(--accent-dim); margin-bottom:8px;
+  }
+  .row{display:flex; justify-content:space-between; align-items:center;}
+  .chaos-bar{
+    display:flex; align-items:center; justify-content:center; gap:14px;
+    background:var(--card); border:1px solid var(--border); border-radius:8px;
+    padding:10px; margin-bottom:12px;
+  }
+  .chaos-num{font-size:30px; font-weight:700; color:var(--accent); line-height:1;}
+  .chaos-lbl{font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--text-dim);}
+  .circ{
+    width:38px; height:38px; border-radius:50%; border:1px solid var(--accent-dim);
+    background:none; color:var(--accent); font-size:20px; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; font-family:inherit;
+  }
+  .circ:active{background:rgba(201,168,76,.15);}
+  .odds-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:6px;}
+  .odds-grid button{
+    padding:12px 4px; font:inherit; font-size:12px; border-radius:6px;
+    border:1px solid var(--border); background:var(--card); color:var(--text); cursor:pointer;
+  }
+  .odds-grid button:active{border-color:var(--accent); color:var(--accent);}
+  .act{
+    width:100%; padding:13px; font:inherit; font-size:12px; font-weight:700;
+    letter-spacing:1px; text-transform:uppercase; border-radius:8px;
+    border:1px solid var(--accent); background:none; color:var(--accent); cursor:pointer;
+  }
+  .act:active{background:rgba(201,168,76,.15);}
+  .act.good{border-color:var(--yes); color:var(--yes);}
+  .act.bad{border-color:var(--no); color:var(--no);}
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:8px;}
+  .toggle-row{display:flex; gap:8px; justify-content:center; margin-bottom:12px;}
+  .toggle{
+    padding:7px 13px; font:inherit; font-size:11px; font-weight:700; letter-spacing:1px;
+    border-radius:4px; border:1px solid var(--border); background:none;
+    color:var(--text-dim); cursor:pointer;
+  }
+  .toggle.on{border-color:var(--accent); color:var(--accent); background:rgba(201,168,76,.13);}
+  .log{display:flex; flex-direction:column; gap:8px; max-height:60vh; overflow-y:auto;}
+  .entry{
+    padding:10px 12px; border-radius:8px; background:var(--card);
+    border:1px solid var(--border); font-size:14px;
+  }
+  .entry .meta{font-size:11px; color:var(--text-dim); margin-bottom:5px;}
+  .badge{
+    display:inline-block; padding:3px 9px; border-radius:4px; color:#1a1714;
+    font-weight:700; font-size:13px;
+  }
+  .evt{
+    margin-top:8px; padding:8px 10px; background:var(--event);
+    border:1px solid var(--accent-dim); border-radius:6px;
+  }
+  .evt .lbl{font-size:10px; font-weight:700; letter-spacing:1px; color:var(--accent); margin-bottom:4px;}
+  .empty{color:var(--text-dim); font-style:italic; text-align:center; padding:22px 10px; font-size:13px;}
+  input,textarea{
+    width:100%; padding:11px; border-radius:6px; border:1px solid var(--border);
+    background:var(--card); color:var(--text); font:inherit; font-size:15px;
+  }
+  textarea{min-height:80px; resize:vertical;}
+  .item{
+    display:flex; align-items:center; justify-content:space-between; gap:8px;
+    padding:9px 11px; border-radius:6px; background:var(--card);
+    border:1px solid var(--border); margin-bottom:5px;
+  }
+  .item .txt{flex:1; word-break:break-word;}
+  .icon{background:none; border:none; color:var(--text-dim); font-size:17px; cursor:pointer; padding:2px 5px; font-family:inherit;}
+  .icon:active{color:var(--accent);}
+  .weight{font-size:10px; color:var(--accent-dim); letter-spacing:1px;}
+  .add-row{display:flex; gap:6px; margin-bottom:9px;}
+  .words{font-size:18px; font-weight:700; color:var(--accent);}
+  .note{font-size:12px; color:var(--text-dim); margin-top:6px; line-height:1.5;}
+  .journal-entry{margin-bottom:9px;}
+  .journal-entry .body{white-space:pre-wrap;}
+  select{
+    width:100%; padding:11px; border-radius:6px; border:1px solid var(--border);
+    background:var(--card); color:var(--text); font:inherit; font-size:15px;
+  }
+  hr{border:none; border-top:1px solid var(--border); margin:16px 0;}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Mythic GME</h1>
+  <div class="sub">2nd Edition Companion</div>
+</header>
+
+<nav id="nav"></nav>
+
+<main>
+  <!-- ORACLE -->
+  <section id="tab-oracle">
+    <div class="chaos-bar">
+      <button class="circ" onclick="setChaos(-1)">&minus;</button>
+      <div style="text-align:center">
+        <div class="chaos-lbl">Chaos Factor</div>
+        <div class="chaos-num" id="chaosNum">5</div>
+      </div>
+      <button class="circ" onclick="setChaos(1)">+</button>
+    </div>
+
+    <div class="toggle-row">
+      <button class="toggle on" id="tgChart" onclick="setMethod(true)">Fate Chart (d100)</button>
+      <button class="toggle" id="tgCheck" onclick="setMethod(false)">Fate Check (2d10)</button>
+    </div>
+
+    <div class="sect">
+      <div class="sect-title">Ask a Fate Question</div>
+      <div class="odds-grid" id="oddsGrid"></div>
+    </div>
+
+    <div class="sect grid2">
+      <button class="act" onclick="genRandomEvent()">Random Event</button>
+      <button class="act" onclick="testScene()">Test Scene</button>
+    </div>
+
+    <div class="sect">
+      <div class="row" style="margin-bottom:8px">
+        <div class="sect-title" style="margin:0">Results Log</div>
+        <button class="icon" style="font-size:11px" onclick="clearLog()">Clear</button>
+      </div>
+      <div class="log" id="oracleLog"></div>
+    </div>
+  </section>
+
+  <!-- SCENES -->
+  <section id="tab-scenes" class="hidden">
+    <div class="chaos-bar">
+      <button class="circ" onclick="setScene(-1)">&lsaquo;</button>
+      <div style="text-align:center">
+        <div class="chaos-lbl">Current Scene</div>
+        <div class="chaos-num" id="sceneNum">1</div>
+      </div>
+      <button class="circ" onclick="setScene(1)">&rsaquo;</button>
+    </div>
+
+    <div class="row" style="margin-bottom:12px">
+      <span style="font-size:13px; color:var(--text-dim)">Chaos Factor: <strong id="sceneCF" style="color:var(--accent)">5</strong></span>
+    </div>
+
+    <div class="sect">
+      <button class="act" onclick="testScene()">Test Expected Scene</button>
+      <div class="note">Roll above the Chaos Factor and your scene starts as expected. Roll at or under it: odd = Altered, even = Interrupt.</div>
+    </div>
+
+    <div class="sect">
+      <div class="sect-title">Scene Note</div>
+      <textarea id="sceneNote" placeholder="What happened in this scene..."></textarea>
+      <button class="act good" style="margin-top:8px" onclick="saveNote()">Save to Journal</button>
+    </div>
+
+    <div class="sect">
+      <div class="sect-title">End of Scene Bookkeeping</div>
+      <div class="grid2">
+        <button class="act good" onclick="endScene(-1)">PC In Control<br>(CF &minus;1)</button>
+        <button class="act bad" onclick="endScene(1)">Not In Control<br>(CF +1)</button>
+      </div>
+      <div class="note">Either button also advances the scene counter.</div>
+    </div>
+
+    <div class="sect">
+      <div class="sect-title">Scene Adjustment Table</div>
+      <button class="act" onclick="rollSceneAdj()">Roll Adjustment (d10)</button>
+    </div>
+  </section>
+
+  <!-- LISTS -->
+  <section id="tab-lists" class="hidden">
+    <div class="sect">
+      <div class="sect-title">Threads List &mdash; <span id="threadCount">0</span> entries</div>
+      <div class="add-row">
+        <input id="threadInput" placeholder="Add a thread / goal..." onkeydown="if(event.key==='Enter')addThread()">
+        <button class="circ" style="border-color:var(--accent)" onclick="addThread()">+</button>
+      </div>
+      <div id="threadList"></div>
+      <button class="act" style="margin-top:8px" onclick="rollList('threads')">Roll on Threads</button>
+    </div>
+
+    <hr>
+
+    <div class="sect">
+      <div class="sect-title">Characters List &mdash; <span id="charCount">0</span> entries</div>
+      <div class="add-row">
+        <input id="charInput" placeholder="Add an NPC, group, or place..." onkeydown="if(event.key==='Enter')addChar()">
+        <button class="circ" style="border-color:var(--accent)" onclick="addChar()">+</button>
+      </div>
+      <div id="charList"></div>
+      <button class="act" style="margin-top:8px" onclick="rollList('chars')">Roll on Characters</button>
+      <div class="note">The &#9679; button adds a repeat entry (up to 3), making that element more likely to come up in Random Events.</div>
+    </div>
+  </section>
+
+  <!-- MEANING -->
+  <section id="tab-meaning" class="hidden">
+    <div class="sect">
+      <div class="sect-title">Meaning Table</div>
+      <select id="tableSelect"></select>
+      <button class="act" style="margin-top:8px" onclick="rollSelectedTable()">Roll Word Pair</button>
+    </div>
+
+    <div class="sect">
+      <div class="sect-title">Quick Tools</div>
+      <div class="grid2">
+        <button class="act" onclick="genRandomEvent()">Full Random Event</button>
+        <button class="act" onclick="rollFocusOnly()">Event Focus Only</button>
+      </div>
+      <div class="grid2" style="margin-top:8px">
+        <button class="act" onclick="rollNames()">Generate a Name</button>
+        <button class="act" onclick="roll4W()">First Scene (4W)</button>
+      </div>
+    </div>
+
+    <div class="sect">
+      <div class="sect-title">Recent Results</div>
+      <div class="log" id="meaningLog"></div>
+    </div>
+  </section>
+
+  <!-- JOURNAL -->
+  <section id="tab-journal" class="hidden">
+    <div class="sect">
+      <div class="sect-title">Adventure Title</div>
+      <input id="advTitle" placeholder="Name your adventure..." oninput="saveState()">
+    </div>
+
+    <div class="sect">
+      <div class="sect-title">Journal &mdash; <span id="journalCount">0</span> scenes</div>
+      <div id="journalList"></div>
+    </div>
+
+    <hr>
+
+    <div class="sect">
+      <div class="sect-title">Session</div>
+      <div class="grid2">
+        <button class="act" onclick="exportSession()">Export as Text</button>
+        <button class="act bad" onclick="resetAll()">New Adventure</button>
+      </div>
+      <div class="note">Everything saves automatically in this browser. Export gives you a copy you can paste anywhere.</div>
+    </div>
+  </section>
+</main>
+
+<script>
+"use strict";
+
+/* ========== DATA ========== */
+const ODDS = ["Impossible","Nearly Impossible","Very Unlikely","Unlikely","50/50","Likely","Very Likely","Nearly Certain","Certain"];
+
+// [exceptionalYes, yesThreshold, exceptionalNo]; null = not possible. Rows: odds. Cols: CF 1-9.
+const FATE_CHART = [
+ [[null,1,81],[null,1,81],[null,1,81],[1,5,82],[2,10,83],[3,15,84],[5,25,86],[7,35,88],[10,50,91]],
+ [[null,1,81],[null,1,81],[1,5,82],[2,10,83],[3,15,84],[5,25,86],[7,35,88],[10,50,91],[13,65,94]],
+ [[null,1,81],[1,5,82],[2,10,83],[3,15,84],[5,25,86],[7,35,88],[10,50,91],[13,65,94],[15,75,96]],
+ [[1,5,82],[2,10,83],[3,15,84],[5,25,86],[7,35,88],[10,50,91],[13,65,94],[15,75,96],[17,85,98]],
+ [[2,10,83],[3,15,84],[5,25,86],[7,35,88],[10,50,91],[13,65,94],[15,75,96],[17,85,98],[18,90,99]],
+ [[3,15,84],[5,25,86],[7,35,88],[10,50,91],[13,65,94],[15,75,96],[17,85,98],[18,90,99],[19,95,100]],
+ [[5,25,86],[7,35,88],[10,50,91],[13,65,94],[15,75,96],[17,85,98],[18,90,99],[19,95,100],[20,99,null]],
+ [[7,35,88],[10,50,91],[13,65,94],[15,75,96],[17,85,98],[18,90,99],[19,95,100],[20,99,null],[20,99,null]],
+ [[10,50,91],[13,65,94],[15,75,96],[17,85,98],[18,90,99],[19,95,100],[20,99,null],[20,99,null],[20,99,null]]
+];
+const ODDS_MOD = [-5,-4,-2,-1,0,1,2,4,5];
+const CF_MOD   = [-5,-4,-2,-1,0,1,2,4,5];
+
+const EVENT_FOCUS = [
+ [1,5,"Remote Event"],[6,10,"Ambiguous Event"],[11,20,"New NPC"],[21,40,"NPC Action"],
+ [41,45,"NPC Negative"],[46,50,"NPC Positive"],[51,55,"Move Toward A Thread"],
+ [56,65,"Move Away From A Thread"],[66,70,"Close A Thread"],[71,80,"PC Negative"],
+ [81,85,"PC Positive"],[86,100,"Current Context"]
+];
+
+const SCENE_ADJ = ["Remove A Character","Add A Character","Reduce/Remove An Activity",
+ "Increase An Activity","Remove An Object","Add An Object",
+ "Make 2 Adjustments","Make 2 Adjustments","Make 2 Adjustments","Make 2 Adjustments"];
+
+const T = {};
+T.action1 = ["Abandon","Accompany","Activate","Agree","Ambush","Arrive","Assist","Attack","Attain","Bargain","Befriend","Bestow","Betray","Block","Break","Carry","Celebrate","Change","Close","Combine","Communicate","Conceal","Continue","Control","Create","Deceive","Decrease","Defend","Delay","Deny","Depart","Deposit","Destroy","Dispute","Disrupt","Distrust","Divide","Drop","Easy","Energize","Escape","Expose","Fail","Fight","Flee","Free","Guide","Harm","Heal","Hinder","Imitate","Imprison","Increase","Indulge","Inform","Inquire","Inspect","Invade","Leave","Lure","Misuse","Move","Neglect","Observe","Open","Oppose","Overthrow","Praise","Proceed","Protect","Punish","Pursue","Recruit","Refuse","Release","Relinquish","Repair","Repulse","Return","Reward","Ruin","Separate","Start","Stop","Strange","Struggle","Succeed","Support","Suppress","Take","Threaten","Transform","Trap","Travel","Triumph","Truce","Trust","Use","Usurp","Waste"];
+T.action2 = ["Advantage","Adversity","Agreement","Animal","Attention","Balance","Battle","Benefits","Building","Burden","Bureaucracy","Business","Chaos","Comfort","Completion","Conflict","Cooperation","Danger","Defense","Depletion","Disadvantage","Distraction","Elements","Emotion","Enemy","Energy","Environment","Expectation","Exterior","Extravagance","Failure","Fame","Fear","Freedom","Friend","Goal","Group","Health","Hindrance","Home","Hope","Idea","Illness","Illusion","Individual","Information","Innocent","Intellect","Interior","Investment","Leadership","Legal","Location","Military","Misfortune","Mundane","Nature","Needs","News","Normal","Object","Obscurity","Official","Opposition","Outside","Pain","Path","Peace","People","Personal","Physical","Plot","Portal","Possessions","Poverty","Power","Prison","Project","Protection","Reassurance","Representative","Riches","Safety","Strength","Success","Suffering","Surprise","Tactic","Technology","Tension","Time","Trial","Value","Vehicle","Victory","Vulnerability","Weapon","Weather","Work","Wound"];
+T.desc1 = ["Adventurously","Aggressively","Anxiously","Awkwardly","Beautifully","Bleakly","Boldly","Bravely","Busily","Calmly","Carefully","Carelessly","Cautiously","Ceaselessly","Cheerfully","Combatively","Coolly","Crazily","Curiously","Dangerously","Defiantly","Deliberately","Delicately","Delightfully","Dimly","Efficiently","Emotionally","Energetically","Enormously","Enthusiastically","Excitedly","Fearfully","Ferociously","Fiercely","Foolishly","Fortunately","Frantically","Freely","Frighteningly","Fully","Generously","Gently","Gladly","Gracefully","Gratefully","Happily","Hastily","Healthily","Helpfully","Helplessly","Hopelessly","Innocently","Intensely","Interestingly","Irritatingly","Joyfully","Kindly","Lazily","Lightly","Loosely","Loudly","Lovingly","Loyally","Majestically","Meaningfully","Mechanically","Mildly","Miserably","Mockingly","Mysteriously","Naturally","Neatly","Nicely","Oddly","Offensively","Officially","Partially","Passively","Peacefully","Perfectly","Playfully","Politely","Positively","Powerfully","Quaintly","Quarrelsomely","Quietly","Roughly","Rudely","Ruthlessly","Slowly","Softly","Strangely","Swiftly","Threateningly","Timidly","Very","Violently","Wildly","Yieldingly"];
+T.desc2 = ["Abnormal","Amusing","Artificial","Average","Beautiful","Bizarre","Boring","Bright","Broken","Clean","Cold","Colorful","Colorless","Comforting","Creepy","Cute","Damaged","Dark","Defeated","Dirty","Disagreeable","Dry","Dull","Empty","Enormous","Extraordinary","Extravagant","Faded","Familiar","Fancy","Feeble","Festive","Flawless","Forlorn","Fragile","Fragrant","Fresh","Full","Glorious","Graceful","Hard","Harsh","Healthy","Heavy","Historical","Horrible","Important","Interesting","Juvenile","Lacking","Large","Lavish","Lean","Less","Lethal","Lively","Lonely","Lovely","Magnificent","Mature","Messy","Mighty","Military","Modern","Mundane","Mysterious","Natural","Normal","Odd","Old","Pale","Peaceful","Petite","Plain","Poor","Powerful","Protective","Quaint","Rare","Reassuring","Remarkable","Rotten","Rough","Ruined","Rustic","Scary","Shocking","Simple","Small","Smooth","Soft","Strong","Stylish","Unpleasant","Valuable","Vibrant","Warm","Watery","Weak","Young"];
+T.locations = ["Abandoned","Active","Artistic","Atmosphere","Beautiful","Bleak","Bright","Business","Calm","Charming","Clean","Cluttered","Cold","Colorful","Colorless","Confusing","Cramped","Creepy","Crude","Cute","Damaged","Dangerous","Dark","Delightful","Dirty","Domestic","Empty","Enclosed","Enormous","Entrance","Exclusive","Exposed","Extravagant","Familiar","Fancy","Festive","Foreboding","Fortunate","Fragrant","Frantic","Frightening","Full","Harmful","Helpful","Horrible","Important","Impressive","Inactive","Intense","Intriguing","Lively","Lonely","Long","Loud","Meaningful","Messy","Mobile","Modern","Mundane","Mysterious","Natural","New","Occupied","Odd","Official","Old","Open","Peaceful","Personal","Plain","Portal","Protected","Protection","Purposeful","Quiet","Reassuring","Remote","Resourceful","Ruined","Rustic","Safe","Services","Simple","Small","Spacious","Storage","Strange","Stylish","Suspicious","Tall","Threatening","Tranquil","Unexpected","Unpleasant","Unusual","Useful","Warm","Warning","Watery","Welcoming"];
+T.characters = ["Accompanied","Active","Aggressive","Ambush","Animal","Anxious","Armed","Beautiful","Bold","Busy","Calm","Careless","Casual","Cautious","Classy","Colorful","Combative","Crazy","Creepy","Curious","Dangerous","Deceitful","Defeated","Defiant","Delightful","Emotional","Energetic","Equipped","Excited","Expected","Familiar","Fast","Feeble","Feminine","Ferocious","Foe","Foolish","Fortunate","Fragrant","Frantic","Friend","Frightened","Frightening","Generous","Glad","Happy","Harmful","Helpful","Helpless","Hurt","Important","Inactive","Influential","Innocent","Intense","Knowledgeable","Large","Lonely","Loud","Loyal","Masculine","Mighty","Miserable","Multiple","Mundane","Mysterious","Natural","Odd","Official","Old","Passive","Peaceful","Playful","Powerful","Professional","Protected","Protecting","Questioning","Quiet","Reassuring","Resourceful","Seeking","Skilled","Slow","Small","Stealthy","Strange","Strong","Tall","Thieving","Threatening","Triumphant","Unexpected","Unnatural","Unusual","Violent","Vocal","Weak","Wild","Young"];
+T.objects = ["Active","Artistic","Average","Beautiful","Bizarre","Bright","Clothing","Clue","Cold","Colorful","Communication","Complicated","Confusing","Consumable","Container","Creepy","Crude","Cute","Damaged","Dangerous","Deactivated","Deliberate","Delightful","Desired","Domestic","Empty","Energy","Enormous","Equipment","Expected","Expended","Extravagant","Faded","Familiar","Fancy","Flora","Fortunate","Fragile","Fragrant","Frightening","Garbage","Guidance","Hard","Harmful","Healing","Heavy","Helpful","Horrible","Important","Inactive","Information","Intriguing","Large","Lethal","Light","Liquid","Loud","Majestic","Meaningful","Mechanical","Modern","Moving","Multiple","Mundane","Mysterious","Natural","New","Odd","Official","Old","Ornamental","Ornate","Personal","Powerful","Prized","Protection","Rare","Ready","Reassuring","Resource","Ruined","Small","Soft","Solitary","Stolen","Strange","Stylish","Threatening","Tool","Travel","Unexpected","Unpleasant","Unusual","Useful","Useless","Valuable","Warm","Weapon","Wet","Worn"];
+T.names = ["Ah","Al","An","Ar","Ba","Be","Bel","Bo","Br","Ca","Ce","Ch","Co","Da","De","Do","Dr","Ed","El","En","Er","Fa","Fe","Fi","Fo","Fr","Ga","Ge","Gr","Ha","He","Hee","Ho","In","Ir","Is","Ja","Je","Jo","Ka","Ke","Ki","Ko","La","Le","Len","Li","Lo","Ma","Me","Mi","Mo","Na","Ne","Ni","No","Ob","Od","Ol","On","Or","Pa","Pe","Pr","Ra","Re","Ri","Ro","Sa","Se","Sh","Si","So","St","Ta","Tal","Te","Th","Ti","To","Tr","Ul","Um","Un","Ur","Va","Ve","Vi","Vo","Wa","We","Wi","Wo","Ya","Ye","Yo","Za","Ze","Zo","R","N"];
+
+const TABLES = {
+  "Actions": ()=>[pick(T.action1), pick(T.action2)],
+  "Descriptions": ()=>[pick(T.desc1), pick(T.desc2)],
+  "Elements: Locations": ()=>[pick(T.locations), pick(T.locations)],
+  "Elements: Characters": ()=>[pick(T.characters), pick(T.characters)],
+  "Elements: Objects": ()=>[pick(T.objects), pick(T.objects)]
+};
+
+/* ========== STATE ========== */
+let S = {
+  chaos:5, scene:1, useChart:true, title:"",
+  threads:[], chars:[], journal:[], log:[]
+};
+
+const KEY = "mythic-gme-2e-v1";
+function saveState(){
+  S.title = document.getElementById("advTitle").value;
+  try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){}
+}
+function loadState(){
+  try{
+    const raw = localStorage.getItem(KEY);
+    if(raw){ S = Object.assign(S, JSON.parse(raw)); }
+  }catch(e){}
+}
+
+/* ========== DICE ========== */
+function roll(n){ return Math.floor(Math.random()*n)+1; }
+function pick(a){ return a[Math.floor(Math.random()*a.length)]; }
+function focusFor(r){
+  for(const [lo,hi,label] of EVENT_FOCUS){ if(r>=lo && r<=hi) return label; }
+  return "Current Context";
+}
+
+/* ========== LOGGING ========== */
+function addLog(entry){
+  entry.ts = new Date().toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"});
+  S.log.push(entry);
+  if(S.log.length > 300) S.log = S.log.slice(-300);
+  saveState(); renderLogs();
+}
+function clearLog(){ S.log = []; saveState(); renderLogs(); }
+
+/* ========== FATE QUESTIONS ========== */
+function ask(oddsIdx){
+  if(S.useChart) askChart(oddsIdx); else askCheck(oddsIdx);
+}
+
+function askChart(i){
+  const r = roll(100);
+  const [exY, yes, exN] = FATE_CHART[i][S.chaos-1];
+  let ans;
+  if(exY !== null && r <= exY) ans = "Exceptional Yes";
+  else if(r <= yes) ans = "Yes";
+  else if(exN !== null && r >= exN) ans = "Exceptional No";
+  else ans = "No";
+
+  // Random Event: doubles (11,22,...,99) whose digit <= CF
+  const isDouble = (r % 11 === 0) && r >= 11 && r <= 99;
+  const digit = isDouble ? r/11 : 0;
+  const evt = isDouble && digit <= S.chaos;
+
+  const e = {type:"fate", method:"Chart", odds:ODDS[i], roll:String(r), answer:ans, event:evt};
+  if(evt){ e.focus = focusFor(roll(100)); e.meaning = [pick(T.action1), pick(T.action2)]; }
+  addLog(e);
+}
+
+function askCheck(i){
+  const d1 = roll(10), d2 = roll(10);
+  const raw = d1 + d2;
+  const mod = ODDS_MOD[i] + CF_MOD[S.chaos-1];
+  const total = raw + mod;
+  let ans;
+  if(total >= 18 && total <= 20) ans = "Exceptional Yes";
+  else if(total >= 11) ans = "Yes";
+  else if(total >= 2 && total <= 4) ans = "Exceptional No";
+  else ans = "No";
+
+  const evt = (d1 === d2) && d1 <= S.chaos;
+  const e = {
+    type:"fate", method:"Check", odds:ODDS[i],
+    roll:d1+"+"+d2+"="+raw+" "+(mod>=0?"+":"")+mod+" = "+total,
+    answer:ans, event:evt
+  };
+  if(evt){ e.focus = focusFor(roll(100)); e.meaning = [pick(T.action1), pick(T.action2)]; }
+  addLog(e);
+}
+
+/* ========== SCENES ========== */
+function testScene(){
+  const r = roll(10);
+  let res;
+  if(r > S.chaos) res = "Expected Scene";
+  else if(r % 2 === 1) res = "Altered Scene";
+  else res = "Interrupt Scene";
+
+  const e = {type:"scene", roll:r, cf:S.chaos, scene:S.scene, result:res};
+  if(res === "Altered Scene"){
+    const a = roll(10);
+    e.adjustment = SCENE_ADJ[a-1] + " (d10: " + a + ")";
+  }
+  if(res === "Interrupt Scene"){
+    e.focus = focusFor(roll(100));
+    e.meaning = [pick(T.action1), pick(T.action2)];
+  }
+  addLog(e);
+}
+
+function rollSceneAdj(){
+  const a = roll(10);
+  addLog({type:"simple", label:"Scene Adjustment (d10: "+a+")", words:[SCENE_ADJ[a-1]]});
+}
+
+function genRandomEvent(){
+  const fr = roll(100);
+  addLog({type:"event", focusRoll:fr, focus:focusFor(fr), meaning:[pick(T.action1), pick(T.action2)]});
+}
+
+function rollFocusOnly(){
+  const fr = roll(100);
+  addLog({type:"simple", label:"Event Focus (d100: "+fr+")", words:[focusFor(fr)]});
+}
+
+function rollSelectedTable(){
+  const name = document.getElementById("tableSelect").value;
+  addLog({type:"simple", label:name, words:TABLES[name]()});
+}
+
+function rollNames(){
+  const n = 2 + roll(2); // 3-4 syllables
+  let parts = [];
+  for(let i=0;i<n;i++) parts.push(pick(T.names));
+  addLog({type:"simple", label:"Name Sounds", words:[parts.join(" · ")]});
+}
+
+function roll4W(){
+  const who = [pick(T.characters), pick(T.characters)].join(" + ");
+  const what = [pick(T.action1), pick(T.action2)].join(" + ");
+  const where = [pick(T.locations), pick(T.locations)].join(" + ");
+  const why = [pick(T.action1), pick(T.action2)].join(" + ");
+  addLog({type:"fourw", who, what, where, why});
+}
+
+function setChaos(d){
+  S.chaos = Math.max(1, Math.min(9, S.chaos + d));
+  saveState(); render();
+}
+function setScene(d){
+  S.scene = Math.max(1, S.scene + d);
+  saveState(); render();
+}
+function endScene(d){
+  S.chaos = Math.max(1, Math.min(9, S.chaos + d));
+  S.scene += 1;
+  saveState(); render();
+}
+function setMethod(chart){
+  S.useChart = chart; saveState(); render();
+}
+
+function saveNote(){
+  const el = document.getElementById("sceneNote");
+  const txt = el.value.trim();
+  if(!txt) return;
+  S.journal.push({scene:S.scene, cf:S.chaos, text:txt});
+  el.value = "";
+  saveState(); render();
+}
+
+/* ========== LISTS ========== */
+function addThread(){
+  const el = document.getElementById("threadInput");
+  const v = el.value.trim();
+  if(!v) return;
+  S.threads.push(v); el.value = "";
+  saveState(); render();
+}
+function addChar(){
+  const el = document.getElementById("charInput");
+  const v = el.value.trim();
+  if(!v) return;
+  S.chars.push(v); el.value = "";
+  saveState(); render();
+}
+function delItem(which, i){
+  (which==="threads" ? S.threads : S.chars).splice(i,1);
+  saveState(); render();
+}
+function dupItem(which, i){
+  const arr = which==="threads" ? S.threads : S.chars;
+  const val = arr[i];
+  const count = arr.filter(x=>x===val).length;
+  if(count >= 3){
+    addLog({type:"simple", label:"List", words:['"'+val+'" already has 3 entries — the rulebook caps it there.']});
+    return;
+  }
+  arr.push(val);
+  saveState(); render();
+}
+function rollList(which){
+  const arr = which==="threads" ? S.threads : S.chars;
+  const label = which==="threads" ? "Threads List" : "Characters List";
+  if(arr.length === 0){
+    addLog({type:"simple", label:label, words:["List is empty — use Current Context as the Event Focus instead."]});
+    return;
+  }
+  // Mythic rolls across 25 slots in 5 sections; empty lines = "Choose".
+  const sections = Math.ceil(arr.length/5);
+  const sectDie = [1,4,6,8,10][Math.min(sections,5)-1];
+  const sect = sections === 1 ? 1 : Math.ceil(roll(sectDie)/2);
+  const line = roll(10);
+  const idx = (Math.min(sect,sections)-1)*5 + Math.ceil(line/2);
+  const detail = "section "+Math.min(sect,sections)+", line "+Math.ceil(line/2);
+  if(idx <= arr.length){
+    addLog({type:"simple", label:label+" ("+detail+")", words:[arr[idx-1]]});
+  } else {
+    addLog({type:"simple", label:label+" ("+detail+")", words:["CHOOSE — pick the element that fits best, or roll again."]});
+  }
+}
+
+/* ========== RENDER ========== */
+const TABS = ["oracle","scenes","lists","meaning","journal"];
+const TAB_LABELS = ["Oracle","Scenes","Lists","Meaning","Journal"];
+let activeTab = 0;
+
+function buildNav(){
+  const nav = document.getElementById("nav");
+  nav.innerHTML = "";
+  TAB_LABELS.forEach((label, i)=>{
+    const b = document.createElement("button");
+    b.textContent = label;
+    b.onclick = ()=>{ activeTab = i; render(); };
+    nav.appendChild(b);
+  });
+}
+
+function buildOdds(){
+  const g = document.getElementById("oddsGrid");
+  g.innerHTML = "";
+  ODDS.forEach((label, i)=>{
+    const b = document.createElement("button");
+    b.textContent = label;
+    b.onclick = ()=>ask(i);
+    g.appendChild(b);
+  });
+}
+
+function buildTableSelect(){
+  const sel = document.getElementById("tableSelect");
+  sel.innerHTML = "";
+  Object.keys(TABLES).forEach(name=>{
+    const o = document.createElement("option");
+    o.value = name; o.textContent = name;
+    sel.appendChild(o);
+  });
+}
+
+function esc(s){
+  return String(s).replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+
+function entryHTML(e){
+  const evtBlock = (title, focus, meaning)=>
+    '<div class="evt"><div class="lbl">'+title+'</div>'+
+    '<div>Focus: <strong>'+esc(focus)+'</strong></div>'+
+    '<div>Meaning: <strong>'+esc(meaning[0])+'</strong> + <strong>'+esc(meaning[1])+'</strong></div></div>';
+
+  if(e.type === "fate"){
+    const color = e.answer === "Exceptional Yes" ? "var(--ex-yes)"
+                : e.answer === "Yes" ? "var(--yes)"
+                : e.answer === "Exceptional No" ? "var(--ex-no)" : "var(--no)";
+    return '<div class="entry">'+
+      '<div class="meta row"><span>'+e.ts+' &middot; Fate '+e.method+' &middot; '+esc(e.odds)+'</span>'+
+      '<span>'+esc(e.roll)+'</span></div>'+
+      '<span class="badge" style="background:'+color+'">'+esc(e.answer)+'</span>'+
+      (e.event ? evtBlock("RANDOM EVENT TRIGGERED", e.focus, e.meaning) : "")+
+      '</div>';
+  }
+  if(e.type === "scene"){
+    const color = e.result === "Expected Scene" ? "var(--yes)"
+                : e.result === "Altered Scene" ? "var(--accent)" : "var(--ex-no)";
+    return '<div class="entry">'+
+      '<div class="meta row"><span>'+e.ts+' &middot; Scene '+e.scene+' Test</span>'+
+      '<span>d10: '+e.roll+' vs CF '+e.cf+'</span></div>'+
+      '<span class="badge" style="background:'+color+'">'+esc(e.result)+'</span>'+
+      (e.adjustment ? '<div style="margin-top:6px">Adjustment: <strong>'+esc(e.adjustment)+'</strong></div>' : "")+
+      (e.focus ? evtBlock("INTERRUPT EVENT", e.focus, e.meaning) : "")+
+      '</div>';
+  }
+  if(e.type === "event"){
+    return '<div class="entry" style="background:var(--event)">'+
+      '<div class="meta">'+e.ts+' &middot; Random Event (d100: '+e.focusRoll+')</div>'+
+      '<div>Focus: <strong style="color:var(--accent)">'+esc(e.focus)+'</strong></div>'+
+      '<div>Meaning: <strong>'+esc(e.meaning[0])+'</strong> + <strong>'+esc(e.meaning[1])+'</strong></div></div>';
+  }
+  if(e.type === "fourw"){
+    return '<div class="entry" style="background:var(--event)">'+
+      '<div class="meta">'+e.ts+' &middot; First Scene 4W</div>'+
+      '<div><strong>Who:</strong> '+esc(e.who)+'</div>'+
+      '<div><strong>What:</strong> '+esc(e.what)+'</div>'+
+      '<div><strong>Where:</strong> '+esc(e.where)+'</div>'+
+      '<div><strong>Why:</strong> '+esc(e.why)+'</div></div>';
+  }
+  if(e.type === "simple"){
+    return '<div class="entry">'+
+      '<div class="meta">'+e.ts+' &middot; '+esc(e.label)+'</div>'+
+      '<div class="words">'+e.words.map(esc).join(" + ")+'</div></div>';
+  }
+  return "";
+}
+
+function renderLogs(){
+  const ol = document.getElementById("oracleLog");
+  if(S.log.length === 0){
+    ol.innerHTML = '<div class="empty">Ask a Fate Question to begin your adventure&hellip;</div>';
+  } else {
+    ol.innerHTML = S.log.slice().reverse().map(entryHTML).join("");
+  }
+  const ml = document.getElementById("meaningLog");
+  const filtered = S.log.filter(e=>e.type==="simple"||e.type==="event"||e.type==="fourw");
+  ml.innerHTML = filtered.length
+    ? filtered.slice(-12).reverse().map(entryHTML).join("")
+    : '<div class="empty">Roll on a table to get inspired&hellip;</div>';
+}
+
+function renderList(which){
+  const arr = which==="threads" ? S.threads : S.chars;
+  const el = document.getElementById(which==="threads" ? "threadList" : "charList");
+  if(arr.length === 0){
+    el.innerHTML = '<div class="empty">Empty. '+(which==="threads"
+      ? "Add a goal or quest your character is pursuing."
+      : "Add NPCs, groups, places, or recurring events.")+'</div>';
+    return;
+  }
+  el.innerHTML = arr.map((v,i)=>{
+    const count = arr.filter(x=>x===v).length;
+    const w = count>1 ? '<span class="weight">&times;'+count+'</span>' : '';
+    return '<div class="item"><span class="txt">'+(i+1)+'. '+esc(v)+' '+w+'</span>'+
+      '<span><button class="icon" title="Add repeat entry" onclick="dupItem(\''+which+'\','+i+')">&#9679;</button>'+
+      '<button class="icon" onclick="delItem(\''+which+'\','+i+')">&times;</button></span></div>';
+  }).join("");
+}
+
+function renderJournal(){
+  const el = document.getElementById("journalList");
+  document.getElementById("journalCount").textContent = S.journal.length;
+  if(S.journal.length === 0){
+    el.innerHTML = '<div class="empty">Save scene notes from the Scenes tab and they collect here.</div>';
+    return;
+  }
+  el.innerHTML = S.journal.map((j,i)=>
+    '<div class="entry journal-entry">'+
+    '<div class="row" style="margin-bottom:5px">'+
+    '<strong style="color:var(--accent)">Scene '+j.scene+'</strong>'+
+    '<span><span class="meta" style="margin:0">CF '+j.cf+'</span> '+
+    '<button class="icon" onclick="delJournal('+i+')">&times;</button></span></div>'+
+    '<div class="body">'+esc(j.text)+'</div></div>'
+  ).join("");
+}
+function delJournal(i){ S.journal.splice(i,1); saveState(); render(); }
+
+function render(){
+  // tabs
+  const navBtns = document.getElementById("nav").children;
+  for(let i=0;i<navBtns.length;i++) navBtns[i].className = (i===activeTab ? "active" : "");
+  TABS.forEach((t,i)=>{
+    document.getElementById("tab-"+t).className = (i===activeTab ? "" : "hidden");
+  });
+  // values
+  document.getElementById("chaosNum").textContent = S.chaos;
+  document.getElementById("sceneCF").textContent = S.chaos;
+  document.getElementById("sceneNum").textContent = S.scene;
+  document.getElementById("tgChart").className = "toggle" + (S.useChart ? " on" : "");
+  document.getElementById("tgCheck").className = "toggle" + (S.useChart ? "" : " on");
+  document.getElementById("threadCount").textContent = S.threads.length;
+  document.getElementById("charCount").textContent = S.chars.length;
+  document.getElementById("advTitle").value = S.title || "";
+  renderList("threads"); renderList("chars");
+  renderJournal(); renderLogs();
+}
+
+/* ========== EXPORT / RESET ========== */
+function exportSession(){
+  let out = (S.title || "Untitled Adventure") + "\n";
+  out += "Mythic GME 2nd Edition · Scene " + S.scene + " · Chaos Factor " + S.chaos + "\n";
+  out += "=".repeat(50) + "\n\n";
+  out += "THREADS\n";
+  out += (S.threads.length ? S.threads.map((t,i)=>"  "+(i+1)+". "+t).join("\n") : "  (none)") + "\n\n";
+  out += "CHARACTERS\n";
+  out += (S.chars.length ? S.chars.map((c,i)=>"  "+(i+1)+". "+c).join("\n") : "  (none)") + "\n\n";
+  out += "JOURNAL\n";
+  out += (S.journal.length
+    ? S.journal.map(j=>"  [Scene "+j.scene+" · CF "+j.cf+"]\n  "+j.text.replace(/\n/g,"\n  ")).join("\n\n")
+    : "  (none)") + "\n";
+
+  const blob = new Blob([out], {type:"text/plain"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = (S.title || "mythic-adventure").replace(/[^a-z0-9]+/gi,"-").toLowerCase() + ".txt";
+  a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href), 1000);
+}
+
+function resetAll(){
+  if(!confirm("Start a new adventure? This clears your lists, journal, and log.")) return;
+  S = {chaos:5, scene:1, useChart:S.useChart, title:"", threads:[], chars:[], journal:[], log:[]};
+  saveState(); render();
+}
+
+/* ========== INIT ========== */
+loadState();
+buildNav();
+buildOdds();
+buildTableSelect();
+render();
+</script>
+</body>
+</html>

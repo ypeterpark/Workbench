@@ -2,289 +2,219 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Workbench</title>
-
-<!--
-  ==========================================================================
-  HOW TO ADD A NEW APP TO THIS PAGE
-
-  1. Put the app's HTML file in its own folder, named index.html.
-     Example:  mythic/index.html
-
-  2. Copy one whole <a class="tool"> ... </a> block below and paste it
-     after the last one. Then change four things:
-       - href="..."          the folder name, with a trailing slash
-       - the eyebrow line    the small label above the name
-       - the specimen        the big character or phrase in the box
-       - the name and note   the title and the sentence under it
-
-  3. When an app is finished, change class="tool tool--soon" to
-     class="tool" and give it a real href. That turns the greyed-out
-     placeholder into a working link.
-
-  To change the site title, edit <title> above and the <h1> below.
-  ==========================================================================
--->
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#14120f">
+<title>Apps</title>
 <style>
-  :root {
-    --ground:    #dce0da;
-    --card:      #e9ece5;
-    --card-lift: #f1f3ee;
-    --ink:       #1e2422;
-    --ink-soft:  #59635d;
-    --rule:      #b7beb4;
-    --accent:    #7c3a2d;
-
-    --display: "Fraunces", Georgia, serif;
-    --mono:    "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
-    --body:    ui-sans-serif, -apple-system, "Segoe UI", Roboto, sans-serif;
-    --hebrew:  "SBL BibLit", "Ezra SIL", "Times New Roman", serif;
+  :root{
+    --bg:#14120f;
+    --ink:#ece3d4;
+    --ink-dim:#8f8474;
+    --rule:#2f2a22;
+    --gold:#c9a84c;
+    --card:#1e1a15;
+    --card-hover:#262019;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Iowan Old Style','Palatino Linotype','Book Antiqua',Palatino,Georgia,serif;
+    line-height:1.5;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
+    -webkit-font-smoothing:antialiased;
+  }
+  /* subtle paper grain */
+  body::before{
+    content:"";
+    position:fixed; inset:0; pointer-events:none; z-index:0;
+    opacity:.035;
+    background-image:radial-gradient(circle at 1px 1px, #fff 1px, transparent 0);
+    background-size:4px 4px;
+  }
+  .wrap{
+    position:relative; z-index:1;
+    width:100%; max-width:680px; margin:0 auto;
+    padding:56px 24px 64px;
+    flex:1;
   }
 
-  * { box-sizing: border-box; }
-
-  html { -webkit-text-size-adjust: 100%; }
-
-  body {
-    margin: 0;
-    padding: 0 1.25rem 4rem;
-    background: var(--ground);
-    color: var(--ink);
-    font-family: var(--body);
-    line-height: 1.55;
-    -webkit-font-smoothing: antialiased;
+  header{margin-bottom:44px;}
+  .eyebrow{
+    font-size:10px; letter-spacing:.34em; text-transform:uppercase;
+    color:var(--ink-dim); margin-bottom:14px;
+  }
+  h1{
+    margin:0;
+    font-size:clamp(34px,9vw,52px);
+    font-weight:400;
+    letter-spacing:-.015em;
+    line-height:1.05;
+  }
+  h1 .amp{color:var(--gold); font-style:italic;}
+  .tagline{
+    margin-top:14px; font-size:16px; color:var(--ink-dim);
+    max-width:44ch;
+  }
+  .rule{
+    height:1px; background:var(--rule); margin:34px 0 0;
+    position:relative;
+  }
+  .rule::after{
+    content:""; position:absolute; left:0; top:0;
+    width:64px; height:1px; background:var(--gold);
   }
 
-  .wrap {
-    max-width: 40rem;
-    margin: 0 auto;
+  .list{list-style:none; margin:0; padding:0;}
+  .list li{margin:0;}
+
+  a.app{
+    display:block;
+    text-decoration:none;
+    color:inherit;
+    padding:22px 22px 22px 24px;
+    border:1px solid var(--rule);
+    border-radius:10px;
+    background:var(--card);
+    margin-top:14px;
+    transition:background .18s ease, border-color .18s ease, transform .18s ease;
+    position:relative;
+    overflow:hidden;
+  }
+  a.app::before{
+    content:"";
+    position:absolute; left:0; top:0; bottom:0; width:3px;
+    background:var(--gold);
+    transform:scaleY(0); transform-origin:top;
+    transition:transform .22s ease;
+  }
+  a.app:hover, a.app:focus-visible{
+    background:var(--card-hover);
+    border-color:#3d362b;
+    transform:translateX(2px);
+    outline:none;
+  }
+  a.app:hover::before, a.app:focus-visible::before{transform:scaleY(1);}
+
+  .app-head{
+    display:flex; align-items:baseline; justify-content:space-between;
+    gap:16px; flex-wrap:wrap;
+  }
+  .app-name{
+    font-size:21px; letter-spacing:-.01em;
+  }
+  .app-tag{
+    font-size:10px; letter-spacing:.2em; text-transform:uppercase;
+    color:var(--gold); white-space:nowrap;
+  }
+  .app-desc{
+    margin-top:7px; font-size:14.5px; color:var(--ink-dim); max-width:52ch;
   }
 
-  /* ---------- header ---------- */
-
-  header {
-    padding: 4.5rem 0 2.5rem;
+  .empty{
+    margin-top:14px; padding:26px 22px;
+    border:1px dashed var(--rule); border-radius:10px;
+    color:var(--ink-dim); font-style:italic; font-size:14px;
   }
 
-  .eyebrow {
-    font-family: var(--mono);
-    font-size: 0.7rem;
-    font-weight: 500;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--ink-soft);
-    margin: 0 0 1.1rem;
+  footer{
+    position:relative; z-index:1;
+    max-width:680px; margin:0 auto; width:100%;
+    padding:0 24px 40px;
+    font-size:12px; color:var(--ink-dim);
+    letter-spacing:.04em;
   }
+  footer .fr{height:1px; background:var(--rule); margin-bottom:16px;}
 
-  h1 {
-    font-family: var(--display);
-    font-optical-sizing: auto;
-    font-weight: 600;
-    font-size: clamp(2.75rem, 12vw, 4.25rem);
-    line-height: 0.95;
-    letter-spacing: -0.02em;
-    margin: 0 0 1rem;
-  }
-
-  .lede {
-    margin: 0;
-    max-width: 28rem;
-    color: var(--ink-soft);
-    font-size: 1rem;
-  }
-
-  /* ---------- tool rows ---------- */
-
-  .tools {
-    display: flex;
-    flex-direction: column;
-    gap: 0.85rem;
-  }
-
-  .tool {
-    display: flex;
-    align-items: stretch;
-    gap: 1.1rem;
-    padding: 1.25rem;
-    background: var(--card);
-    border: 1px solid var(--rule);
-    border-radius: 3px;
-    text-decoration: none;
-    color: inherit;
-    transition: background 140ms ease, transform 140ms ease, border-color 140ms ease;
-  }
-
-  .tool:hover,
-  .tool:focus-visible {
-    background: var(--card-lift);
-    border-color: var(--ink-soft);
-    transform: translateY(-2px);
-  }
-
-  .tool:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 3px;
-  }
-
-  /* the specimen: a real artifact from inside each app */
-  .specimen {
-    flex: 0 0 5.25rem;
-    display: grid;
-    place-items: center;
-    padding: 0.5rem;
-    background: var(--ground);
-    border: 1px solid var(--rule);
-    border-radius: 2px;
-    text-align: center;
-  }
-
-  .specimen--hebrew {
-    font-family: var(--hebrew);
-    font-size: 1.9rem;
-    line-height: 1.3;
-    direction: rtl;
-  }
-
-  .specimen--phrase {
-    font-family: var(--display);
-    font-size: 0.95rem;
-    line-height: 1.2;
-    color: var(--accent);
-  }
-
-  .meta { min-width: 0; }
-
-  .kicker {
-    font-family: var(--mono);
-    font-size: 0.66rem;
-    font-weight: 500;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin: 0 0 0.3rem;
-  }
-
-  .name {
-    font-family: var(--display);
-    font-weight: 600;
-    font-size: 1.35rem;
-    line-height: 1.15;
-    letter-spacing: -0.01em;
-    margin: 0 0 0.35rem;
-  }
-
-  .note {
-    margin: 0;
-    font-size: 0.9rem;
-    color: var(--ink-soft);
-  }
-
-  /* ---------- not-yet-built ---------- */
-
-  .tool--soon {
-    cursor: default;
-    border-style: dashed;
-    background: transparent;
-  }
-
-  .tool--soon:hover {
-    background: transparent;
-    border-color: var(--rule);
-    transform: none;
-  }
-
-  .tool--soon .specimen,
-  .tool--soon .name { opacity: 0.55; }
-
-  .tool--soon .kicker { color: var(--ink-soft); }
-
-  /* ---------- footer ---------- */
-
-  footer {
-    margin-top: 3rem;
-    padding-top: 1.25rem;
-    border-top: 1px solid var(--rule);
-    font-family: var(--mono);
-    font-size: 0.7rem;
-    color: var(--ink-soft);
-  }
-
-  /* ---------- entrance ---------- */
-
-  .fade {
-    opacity: 0;
-    transform: translateY(10px);
-    animation: rise 620ms cubic-bezier(.22,.68,.36,1) forwards;
-  }
-
-  .fade:nth-child(1) { animation-delay: 60ms; }
-  .fade:nth-child(2) { animation-delay: 140ms; }
-  .fade:nth-child(3) { animation-delay: 220ms; }
-  .fade:nth-child(4) { animation-delay: 300ms; }
-
-  @keyframes rise {
-    to { opacity: 1; transform: none; }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .fade { animation: none; opacity: 1; transform: none; }
-    .tool { transition: none; }
-    .tool:hover { transform: none; }
-  }
-
-  @media (max-width: 26rem) {
-    header { padding-top: 3rem; }
-    .tool { padding: 1rem; gap: 0.85rem; }
-    .specimen { flex-basis: 4.25rem; }
-    .specimen--hebrew { font-size: 1.6rem; }
-    .specimen--phrase { font-size: 0.85rem; }
+  @media (prefers-reduced-motion:reduce){
+    a.app, a.app::before{transition:none;}
   }
 </style>
 </head>
-
 <body>
-<div class="wrap">
 
-  <header class="fade">
-    <p class="eyebrow">Study tools</p>
-    <h1>Workbench</h1>
-    <p class="lede">Small, self-contained tools. Each one opens in the browser, works on a phone, and keeps its own progress.</p>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">A small shelf of tools</div>
+    <h1>Apps <span class="amp">&amp;</span> Oracles</h1>
+    <p class="tagline">Self-contained study and play tools. Each one runs entirely in your browser &mdash; no account, no server, works offline once it loads.</p>
+    <div class="rule"></div>
   </header>
 
-  <main class="tools">
-
-    <!-- ===== Hebrew verb drills ===== -->
-    <a class="tool fade" href="hebrew-verbs/">
-      <div class="specimen specimen--hebrew">קָטַל</div>
-      <div class="meta">
-        <p class="kicker">Biblical Hebrew</p>
-        <h2 class="name">Verb Stem Drills</h2>
-        <p class="note">Principal parts and parsing across all seven stems. Multiple choice or self-grade.</p>
-      </div>
-    </a>
-
-    <!-- ===== Mythic emulator (placeholder) ===== -->
-    <div class="tool tool--soon fade">
-      <div class="specimen specimen--phrase">Yes,<br>and&hellip;</div>
-      <div class="meta">
-        <p class="kicker">Solo tabletop &middot; Not built yet</p>
-        <h2 class="name">Mythic Emulator</h2>
-        <p class="note">Fate Chart odds, random events, and scene checks for playing without a game master.</p>
-      </div>
-    </div>
-
-  </main>
-
-  <footer class="fade">
-    Self-contained HTML &middot; no accounts, no tracking
-  </footer>
-
+  <ul class="list" id="appList"></ul>
 </div>
+
+<footer>
+  <div class="fr"></div>
+  Bookmark this page. Each app saves its own progress in whatever browser you open it in.
+</footer>
+
+<script>
+/* ─────────────────────────────────────────────────────────────
+   EDIT THIS LIST TO ADD OR CHANGE APPS.
+
+   Each app is one block between { and }. Copy a whole block,
+   paste it below the last one, and change the four lines.
+   Keep the commas exactly where they are.
+
+     file  — the app's folder name, with a trailing slash
+     name  — the title shown on the card
+     tag   — the small gold label on the right
+     desc  — one or two sentences underneath
+
+   Each app lives in its own folder with its file named
+   index.html, so the link is just the folder name — for a
+   folder called "star-charts/", the link is "star-charts/".
+   ───────────────────────────────────────────────────────────── */
+
+var APPS = [
+
+  {
+    file: "hebrew-verbs/",
+    name: "Hebrew Verb Drills",
+    tag:  "Study",
+    desc: "Principal parts and parsing practice across the seven stems. Choose your stems and roots, drill by multiple choice or self-grade."
+  },
+
+  {
+    file: "mythic/",
+    name: "Mythic GME",
+    tag:  "Solo Play",
+    desc: "A companion for Mythic Game Master Emulator 2nd Edition. Fate questions, chaos factor, scene testing, lists, and meaning tables in one place."
+  }
+
+];
+
+/* ── Nothing below here needs editing. ── */
+
+(function(){
+  var list = document.getElementById("appList");
+
+  function esc(s){
+    return String(s).replace(/[&<>"']/g, function(c){
+      return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];
+    });
+  }
+
+  if(!APPS.length){
+    list.innerHTML = '<li><div class="empty">No apps listed yet.</div></li>';
+    return;
+  }
+
+  list.innerHTML = APPS.map(function(a){
+    return '<li><a class="app" href="' + esc(a.file) + '">' +
+             '<div class="app-head">' +
+               '<span class="app-name">' + esc(a.name) + '</span>' +
+               (a.tag ? '<span class="app-tag">' + esc(a.tag) + '</span>' : '') +
+             '</div>' +
+             (a.desc ? '<div class="app-desc">' + esc(a.desc) + '</div>' : '') +
+           '</a></li>';
+  }).join("");
+})();
+</script>
 </body>
 </html>
