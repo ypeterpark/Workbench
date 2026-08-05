@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Workbench</title>
+
+<!--
+  ==========================================================================
+  HOW TO ADD A NEW APP TO THIS PAGE
+
+  1. Put the app's HTML file in its own folder, named index.html.
+     Example:  mythic/index.html
+
+  2. Copy one whole <a class="tool"> ... </a> block below and paste it
+     after the last one. Then change four things:
+       - href="..."          the folder name, with a trailing slash
+       - the eyebrow line    the small label above the name
+       - the specimen        the big character or phrase in the box
+       - the name and note   the title and the sentence under it
+
+  3. When an app is finished, change class="tool tool--soon" to
+     class="tool" and give it a real href. That turns the greyed-out
+     placeholder into a working link.
+
+  To change the site title, edit <title> above and the <h1> below.
+  ==========================================================================
+-->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --ground:    #dce0da;
+    --card:      #e9ece5;
+    --card-lift: #f1f3ee;
+    --ink:       #1e2422;
+    --ink-soft:  #59635d;
+    --rule:      #b7beb4;
+    --accent:    #7c3a2d;
+
+    --display: "Fraunces", Georgia, serif;
+    --mono:    "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+    --body:    ui-sans-serif, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --hebrew:  "SBL BibLit", "Ezra SIL", "Times New Roman", serif;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    margin: 0;
+    padding: 0 1.25rem 4rem;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--body);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 40rem;
+    margin: 0 auto;
+  }
+
+  /* ---------- header ---------- */
+
+  header {
+    padding: 4.5rem 0 2.5rem;
+  }
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin: 0 0 1.1rem;
+  }
+
+  h1 {
+    font-family: var(--display);
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-size: clamp(2.75rem, 12vw, 4.25rem);
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    margin: 0 0 1rem;
+  }
+
+  .lede {
+    margin: 0;
+    max-width: 28rem;
+    color: var(--ink-soft);
+    font-size: 1rem;
+  }
+
+  /* ---------- tool rows ---------- */
+
+  .tools {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+  }
+
+  .tool {
+    display: flex;
+    align-items: stretch;
+    gap: 1.1rem;
+    padding: 1.25rem;
+    background: var(--card);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    text-decoration: none;
+    color: inherit;
+    transition: background 140ms ease, transform 140ms ease, border-color 140ms ease;
+  }
+
+  .tool:hover,
+  .tool:focus-visible {
+    background: var(--card-lift);
+    border-color: var(--ink-soft);
+    transform: translateY(-2px);
+  }
+
+  .tool:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+
+  /* the specimen: a real artifact from inside each app */
+  .specimen {
+    flex: 0 0 5.25rem;
+    display: grid;
+    place-items: center;
+    padding: 0.5rem;
+    background: var(--ground);
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    text-align: center;
+  }
+
+  .specimen--hebrew {
+    font-family: var(--hebrew);
+    font-size: 1.9rem;
+    line-height: 1.3;
+    direction: rtl;
+  }
+
+  .specimen--phrase {
+    font-family: var(--display);
+    font-size: 0.95rem;
+    line-height: 1.2;
+    color: var(--accent);
+  }
+
+  .meta { min-width: 0; }
+
+  .kicker {
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 0.3rem;
+  }
+
+  .name {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 1.35rem;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    margin: 0 0 0.35rem;
+  }
+
+  .note {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--ink-soft);
+  }
+
+  /* ---------- not-yet-built ---------- */
+
+  .tool--soon {
+    cursor: default;
+    border-style: dashed;
+    background: transparent;
+  }
+
+  .tool--soon:hover {
+    background: transparent;
+    border-color: var(--rule);
+    transform: none;
+  }
+
+  .tool--soon .specimen,
+  .tool--soon .name { opacity: 0.55; }
+
+  .tool--soon .kicker { color: var(--ink-soft); }
+
+  /* ---------- footer ---------- */
+
+  footer {
+    margin-top: 3rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--rule);
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--ink-soft);
+  }
+
+  /* ---------- entrance ---------- */
+
+  .fade {
+    opacity: 0;
+    transform: translateY(10px);
+    animation: rise 620ms cubic-bezier(.22,.68,.36,1) forwards;
+  }
+
+  .fade:nth-child(1) { animation-delay: 60ms; }
+  .fade:nth-child(2) { animation-delay: 140ms; }
+  .fade:nth-child(3) { animation-delay: 220ms; }
+  .fade:nth-child(4) { animation-delay: 300ms; }
+
+  @keyframes rise {
+    to { opacity: 1; transform: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fade { animation: none; opacity: 1; transform: none; }
+    .tool { transition: none; }
+    .tool:hover { transform: none; }
+  }
+
+  @media (max-width: 26rem) {
+    header { padding-top: 3rem; }
+    .tool { padding: 1rem; gap: 0.85rem; }
+    .specimen { flex-basis: 4.25rem; }
+    .specimen--hebrew { font-size: 1.6rem; }
+    .specimen--phrase { font-size: 0.85rem; }
+  }
+</style>
+</head>
+
+<body>
+<div class="wrap">
+
+  <header class="fade">
+    <p class="eyebrow">Study tools</p>
+    <h1>Workbench</h1>
+    <p class="lede">Small, self-contained tools. Each one opens in the browser, works on a phone, and keeps its own progress.</p>
+  </header>
+
+  <main class="tools">
+
+    <!-- ===== Hebrew verb drills ===== -->
+    <a class="tool fade" href="hebrew-verbs/">
+      <div class="specimen specimen--hebrew">קָטַל</div>
+      <div class="meta">
+        <p class="kicker">Biblical Hebrew</p>
+        <h2 class="name">Verb Stem Drills</h2>
+        <p class="note">Principal parts and parsing across all seven stems. Multiple choice or self-grade.</p>
+      </div>
+    </a>
+
+    <!-- ===== Mythic emulator (placeholder) ===== -->
+    <div class="tool tool--soon fade">
+      <div class="specimen specimen--phrase">Yes,<br>and&hellip;</div>
+      <div class="meta">
+        <p class="kicker">Solo tabletop &middot; Not built yet</p>
+        <h2 class="name">Mythic Emulator</h2>
+        <p class="note">Fate Chart odds, random events, and scene checks for playing without a game master.</p>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="fade">
+    Self-contained HTML &middot; no accounts, no tracking
+  </footer>
+
+</div>
+</body>
+</html>
