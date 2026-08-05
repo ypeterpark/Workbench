@@ -1,0 +1,1174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hebrew Paradigms — Principal Parts Drill</title>
+<style>
+/* ============================================================
+   Design tokens
+   ============================================================ */
+:root{
+  --paper:#F2F3EF;
+  --paper-raised:#FBFBF8;
+  --ink:#191D22;
+  --ink-soft:#5C6167;
+  --rule:#D3D7CE;
+  --rule-strong:#B6BBB0;
+  --tekhelet:#2C4A7C;        /* accent: the blue of the fringes */
+  --tekhelet-soft:#E5EAF3;
+  --olive:#4F6034;           /* got it */
+  --olive-soft:#E8EDE0;
+  --madder:#8E3A2B;          /* missed */
+  --madder-soft:#F5E5E1;
+
+  --font-heb:'SBL BibLit','SBL Hebrew','Ezra SIL','Ezra SIL SR','Taamey Frank CLM','Times New Roman',serif;
+  --font-display:'Iowan Old Style','Palatino Linotype',Palatino,Georgia,serif;
+  --font-ui:ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',sans-serif;
+}
+
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--font-ui);
+  font-size:16px;
+  line-height:1.5;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:720px;margin:0 auto;padding:20px 18px 64px;}
+
+/* ---------- header ---------- */
+header.bar{
+  display:flex;align-items:baseline;gap:12px;
+  padding-bottom:12px;border-bottom:1px solid var(--rule);
+  flex-wrap:wrap;
+}
+header.bar h1{
+  font-family:var(--font-display);
+  font-size:1.05rem;font-weight:600;letter-spacing:.01em;
+  margin:0;
+}
+header.bar .sub{
+  font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--ink-soft);
+}
+header.bar .spacer{flex:1 1 auto;}
+.meter{
+  font-family:var(--font-display);
+  font-variant-numeric:tabular-nums;
+  font-size:.85rem;color:var(--ink-soft);
+  display:flex;gap:14px;
+}
+.meter b{color:var(--ink);font-weight:600;}
+
+/* ---------- buttons ---------- */
+button{
+  font-family:var(--font-ui);font-size:.85rem;
+  background:var(--paper-raised);
+  color:var(--ink);
+  border:1px solid var(--rule-strong);
+  border-radius:2px;
+  padding:8px 14px;
+  cursor:pointer;
+  transition:background .12s ease,border-color .12s ease;
+}
+button:hover{background:#fff;border-color:var(--ink-soft);}
+button:focus-visible{outline:2px solid var(--tekhelet);outline-offset:2px;}
+button.primary{
+  background:var(--tekhelet);color:#fff;border-color:var(--tekhelet);
+  letter-spacing:.03em;padding:11px 22px;font-size:.9rem;
+}
+button.primary:hover{background:#233C67;border-color:#233C67;}
+button.quiet{border-color:transparent;background:transparent;color:var(--ink-soft);padding:6px 8px;}
+button.quiet:hover{background:rgba(0,0,0,.04);color:var(--ink);}
+button[disabled]{opacity:.4;cursor:default;}
+
+/* ---------- progress strip: a row of empty paradigm cells ---------- */
+.strip{display:flex;flex-wrap:wrap;gap:3px;margin:14px 0 0;}
+.strip i{
+  display:block;width:13px;height:13px;
+  border:1px solid var(--rule-strong);background:transparent;
+}
+.strip i.hit{background:var(--olive);border-color:var(--olive);}
+.strip i.miss{background:var(--madder);border-color:var(--madder);}
+.strip i.now{border-color:var(--tekhelet);box-shadow:inset 0 0 0 2px var(--tekhelet-soft);}
+.strip.endless i{display:none;}
+
+/* ---------- the signature: an excerpt from the paradigm sheet ---------- */
+.sheet{
+  margin:34px 0 26px;
+  display:grid;
+  grid-template-columns:auto 1fr;
+  border:1px solid var(--rule-strong);
+  background:var(--paper-raised);
+}
+.sheet .corner{border-right:1px solid var(--rule);border-bottom:1px solid var(--rule);background:#EDEFE9;}
+.sheet .colhead{
+  border-bottom:1px solid var(--rule);
+  background:#EDEFE9;
+  font-family:var(--font-display);
+  font-size:.78rem;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--ink-soft);
+  padding:9px 14px;text-align:center;
+}
+.sheet .rowhead{
+  border-right:1px solid var(--rule);
+  background:#EDEFE9;
+  padding:14px 16px;
+  display:flex;flex-direction:column;justify-content:center;align-items:center;gap:5px;
+  min-width:118px;
+}
+.sheet .rowhead .root{
+  font-family:var(--font-heb);font-size:1.7rem;line-height:1.7;
+  direction:rtl;unicode-bidi:isolate;
+}
+.sheet .rowhead .stem{
+  font-family:var(--font-display);
+  font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);
+}
+.sheet .cell{
+  padding:26px 16px;
+  display:flex;align-items:center;justify-content:center;
+  min-height:132px;
+}
+.sheet .cell .form{
+  font-family:var(--font-heb);
+  font-size:3rem;line-height:1.75;
+  direction:rtl;unicode-bidi:isolate;
+  text-align:center;
+  padding:.12em .1em;
+  overflow:visible;
+}
+.sheet .cell .blank{
+  font-family:var(--font-display);
+  font-size:2.4rem;color:var(--rule-strong);
+}
+.sheet.reveal .cell{background:var(--tekhelet-soft);}
+
+/* ---------- options ---------- */
+.opts{display:grid;gap:8px;}
+.opt{
+  display:flex;align-items:center;gap:14px;
+  width:100%;text-align:left;
+  padding:10px 14px;
+  background:var(--paper-raised);
+  border:1px solid var(--rule-strong);
+  border-radius:2px;cursor:pointer;
+}
+.opt:hover{border-color:var(--ink-soft);background:#fff;}
+.opt .num{
+  flex:0 0 auto;width:22px;height:22px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-display);font-size:.75rem;
+  border:1px solid var(--rule-strong);color:var(--ink-soft);
+}
+.opt .heb{
+  font-family:var(--font-heb);font-size:1.95rem;line-height:1.8;
+  direction:rtl;unicode-bidi:isolate;flex:1 1 auto;text-align:right;
+  padding:.06em 0;
+}
+.opt .analysis{
+  font-family:var(--font-ui);font-size:.95rem;flex:1 1 auto;
+}
+.opt .analysis .he{font-family:var(--font-heb);font-size:1.35rem;direction:rtl;unicode-bidi:isolate;}
+.opt.right{border-color:var(--olive);background:var(--olive-soft);}
+.opt.right .num{border-color:var(--olive);color:var(--olive);}
+.opt.wrong{border-color:var(--madder);background:var(--madder-soft);}
+.opt.wrong .num{border-color:var(--madder);color:var(--madder);}
+.opt[disabled]{cursor:default;opacity:1;}
+.opt[disabled]:hover{background:var(--paper-raised);border-color:var(--rule-strong);}
+.opt.right[disabled]:hover{background:var(--olive-soft);border-color:var(--olive);}
+.opt.wrong[disabled]:hover{background:var(--madder-soft);border-color:var(--madder);}
+
+/* ---------- feedback / actions ---------- */
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px;align-items:center;}
+.note{
+  font-size:.85rem;color:var(--ink-soft);margin-top:14px;
+  border-left:2px solid var(--rule-strong);padding-left:12px;
+}
+.note .he{font-family:var(--font-heb);font-size:1.3rem;direction:rtl;unicode-bidi:isolate;}
+.verdict{font-family:var(--font-display);font-size:.95rem;letter-spacing:.02em;}
+.verdict.ok{color:var(--olive);}
+.verdict.no{color:var(--madder);}
+.hint{
+  margin-top:26px;padding-top:12px;border-top:1px solid var(--rule);
+  font-size:.72rem;color:var(--ink-soft);letter-spacing:.04em;
+}
+kbd{
+  font-family:var(--font-ui);font-size:.68rem;
+  border:1px solid var(--rule-strong);border-bottom-width:2px;
+  border-radius:3px;padding:1px 5px;background:var(--paper-raised);
+}
+
+/* ---------- settings ---------- */
+.panel h2{
+  font-family:var(--font-display);font-size:1.35rem;font-weight:600;
+  margin:26px 0 4px;
+}
+.panel .lede{color:var(--ink-soft);font-size:.9rem;margin:0 0 22px;}
+fieldset{
+  border:0;border-top:1px solid var(--rule);
+  margin:0;padding:18px 0 4px;
+}
+legend{
+  font-family:var(--font-display);
+  font-size:.74rem;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--ink-soft);padding:0 10px 0 0;
+}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
+.chip{
+  display:inline-flex;align-items:center;gap:7px;
+  border:1px solid var(--rule-strong);background:var(--paper-raised);
+  padding:6px 12px;border-radius:2px;cursor:pointer;font-size:.85rem;
+  user-select:none;
+}
+.chip:hover{border-color:var(--ink-soft);}
+.chip input{position:absolute;opacity:0;width:0;height:0;}
+.chip.on{background:var(--tekhelet);border-color:var(--tekhelet);color:#fff;}
+.chip .he{font-family:var(--font-heb);font-size:1.25rem;direction:rtl;unicode-bidi:isolate;line-height:1.6;}
+.chip:focus-within{outline:2px solid var(--tekhelet);outline-offset:2px;}
+.shortcuts{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;}
+.shortcuts button{font-size:.74rem;padding:4px 10px;color:var(--ink-soft);}
+.startrow{margin:30px 0 0;display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+.warn{color:var(--madder);font-size:.85rem;}
+
+/* ---------- summary ---------- */
+table.sum{border-collapse:collapse;width:100%;margin-top:12px;font-size:.9rem;}
+table.sum th,table.sum td{
+  border-bottom:1px solid var(--rule);padding:7px 8px;text-align:left;
+  font-variant-numeric:tabular-nums;
+}
+table.sum th{
+  font-family:var(--font-display);font-weight:600;
+  font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);
+}
+table.sum td.he{font-family:var(--font-heb);font-size:1.5rem;direction:rtl;unicode-bidi:isolate;text-align:right;width:5em;}
+table.sum td.pct{width:5em;}
+.bigscore{
+  font-family:var(--font-display);font-size:3.2rem;line-height:1;
+  margin:18px 0 2px;font-variant-numeric:tabular-nums;
+}
+.bigscore small{font-size:1rem;color:var(--ink-soft);letter-spacing:.1em;text-transform:uppercase;}
+
+.fade{animation:fade .18s ease-out;}
+@keyframes fade{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:none;}}
+@media (prefers-reduced-motion:reduce){.fade{animation:none;}}
+
+@media (max-width:540px){
+  .wrap{padding:16px 14px 56px;}
+  .sheet .cell .form{font-size:2.3rem;}
+  .sheet .rowhead{min-width:92px;padding:12px 10px;}
+  .sheet .rowhead .root{font-size:1.45rem;}
+  .sheet .cell{min-height:112px;padding:20px 10px;}
+  .opt .heb{font-size:1.6rem;}
+  .bigscore{font-size:2.6rem;}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="bar">
+    <h1>Hebrew Paradigms</h1>
+    <span class="sub">Principal parts</span>
+    <span class="spacer"></span>
+    <span class="meter" id="meter" hidden>
+      <span><b id="mScore">0</b>/<span id="mSeen">0</span></span>
+      <span id="mTime">0:00</span>
+    </span>
+    <button class="quiet" id="btnSettings" hidden>Settings</button>
+  </header>
+  <div class="strip" id="strip" hidden></div>
+  <main id="app"></main>
+</div>
+
+<script>
+"use strict";
+
+/* ============================================================================
+   1. VERB DATA
+   ----------------------------------------------------------------------------
+   This is the only block you need to touch to add a root or correct a form.
+   Everything below section 2 is drill logic and never needs editing.
+
+   SHAPE
+   -----
+   VERB_DATA = {
+     qal:     [ entry, entry, ... ],   // the fourteen roots, Qal stem only
+     derived: [ entry, entry, ... ]    // the six derived stems, root קטל only
+   }
+
+   Each entry:
+     {
+       root:  "קטל",            // unpointed consonantal root, as printed in the
+                                //   left-hand column of the paradigm sheet
+       stem:  "Qal",            // one of: Qal Niphal Piel Pual Hiphil Hophal Hitpael
+       forms: {
+         qatal:      ["קָטַל"],   // 3ms qatal
+         qatal2ms:   null,      // 2ms qatal — only where the stem vowel changes
+         yiqtol:     ["יִקְטֹל"],  // 3ms yiqtol
+         infcon:     ["קְטֹל"],   // infinitive construct
+         participle: ["קֹטֵל"]    // ms participle
+       }
+     }
+
+   RULES FOR EDITING
+   -----------------
+   • Every form is an ARRAY of strings, even when there is only one form.
+     Where the sheet gives two (ישׁב yiqtol), list both: ["יֵשֵׁב","תֵּשֵׁב"].
+     The first one is the one shown as the answer in multiple choice; the rest
+     are accepted and listed on reveal.
+   • Use null (not "" and not []) for a slot the sheet leaves empty. Those
+     slots are skipped entirely — never drilled, never used as a distractor.
+   • Fully pointed, no accents, no metheg.
+   • To ADD A ROOT: copy any qal entry, change root + forms, done. It shows up
+     in the root picker automatically.
+   • To ADD A STEM for a weak root: add an entry to `derived` with that root and
+     stem. The drill treats `qal` and `derived` identically; the split is only
+     for readability. Distractor generation and the root filter both adapt.
+   • To CORRECT A FORM: edit the string in place. Nothing else references it.
+============================================================================ */
+
+const VERB_DATA = {
+
+  /* ---- Qal principal parts, fourteen roots (Garrett ch. 21) -------------- */
+  qal: [
+    { root:"קטל",  stem:"Qal", forms:{ qatal:["קָטַל"],  qatal2ms:null, yiqtol:["יִקְטֹל"],        infcon:["קְטֹל"],  participle:["קֹטֵל"]  } },
+    { root:"בנה",  stem:"Qal", forms:{ qatal:["בָּנָה"],  qatal2ms:null, yiqtol:["יִבְנֶה"],        infcon:["בְּנוֹת"], participle:["בּוֹנֶה"] } },
+    { root:"עמד",  stem:"Qal", forms:{ qatal:["עָמַד"],  qatal2ms:null, yiqtol:["יַעֲמֹד"],       infcon:["עֲמֹד"],  participle:["עֹמֵד"]  } },
+    { root:"בחר",  stem:"Qal", forms:{ qatal:["בָּחַר"],  qatal2ms:null, yiqtol:["יִבְחַר"],        infcon:["בְּחֹר"],  participle:["בֹּחֵר"]  } },
+    { root:"שׁמע",  stem:"Qal", forms:{ qatal:["שָׁמַע"],  qatal2ms:null, yiqtol:["יִשְׁמַע"],        infcon:["שְׁמֹעַ"],  participle:["שֹׁמֵעַ"]  } },
+    { root:"מצא",  stem:"Qal", forms:{ qatal:["מָצָא"],  qatal2ms:null, yiqtol:["יִמְצָא"],        infcon:["מְצֹא"],  participle:["מֹצֵא"]  } },
+    { root:"חטא",  stem:"Qal", forms:{ qatal:["חָטָא"],  qatal2ms:null, yiqtol:["יֶחֱטָא"],       infcon:["חֲטֹא"],  participle:["חוֹטֵא"] } },
+    { root:"נפל",  stem:"Qal", forms:{ qatal:["נָפַל"],  qatal2ms:null, yiqtol:["יִפֹּל"],         infcon:["נְפֹל"],  participle:["נֹפֵל"]  } },
+    { root:"שׁוּב",  stem:"Qal", forms:{ qatal:["שָׁב"],   qatal2ms:null, yiqtol:["יָשׁוּב"],        infcon:["שׁוּב"],   participle:["שָׁב"]   } },
+    { root:"סבב",  stem:"Qal", forms:{ qatal:["סָבַב"],  qatal2ms:null, yiqtol:["יָסֹב"],         infcon:["סְבֹב"],  participle:["סֹבֵב"]  } },
+    { root:"ישׁב",  stem:"Qal", forms:{ qatal:["יָשַׁב"],  qatal2ms:null, yiqtol:["יֵשֵׁב","תֵּשֵׁב"], infcon:["שֶׁבֶת"],  participle:["יֹשֵׁב"]  } },
+    { root:"ירשׁ",  stem:"Qal", forms:{ qatal:["יָרַשׁ"],  qatal2ms:null, yiqtol:["יִירַשׁ"],        infcon:["רֶשֶׁת"],  participle:["יוֹרֵשׁ"] } },
+    { root:"אמר",  stem:"Qal", forms:{ qatal:["אָמַר"],  qatal2ms:null, yiqtol:["יֹאמַר"],        infcon:["לֵאמֹר"], participle:["אֹמֵר"]  } },
+    { root:"אהב",  stem:"Qal", forms:{ qatal:["אָהַב"],  qatal2ms:null, yiqtol:["יֶאֱהַב"],       infcon:["אַהֲבַת"], participle:["אֹהֵב"]  } }
+  ],
+
+  /* ---- The six derived stems, strong root קטל --------------------------- */
+  derived: [
+    { root:"קטל", stem:"Niphal",  forms:{ qatal:["נִקְטַל"],   qatal2ms:null,           yiqtol:["יִקָּטֵל"],  infcon:["הִקָּטֵל"],  participle:["נִקְטָל"]  } },
+    { root:"קטל", stem:"Piel",    forms:{ qatal:["קִטֵּל"],    qatal2ms:["קִטַּלְתָּ"],     yiqtol:["יְקַטֵּל"],  infcon:["קַטֵּל"],    participle:["מְקַטֵּל"]  } },
+    { root:"קטל", stem:"Pual",    forms:{ qatal:["קֻטַּל"],    qatal2ms:null,           yiqtol:["יְקֻטַּל"],  infcon:["קֻטַּל"],    participle:["מְקֻטָּל"]  } },
+    { root:"קטל", stem:"Hiphil",  forms:{ qatal:["הִקְטִיל"],  qatal2ms:["הִקְטַלְתָּ"],   yiqtol:["יַקְטִיל"], infcon:["הַקְטִיל"], participle:["מַקְטִיל"] } },
+    { root:"קטל", stem:"Hophal",  forms:{ qatal:["הָקְטַל"],   qatal2ms:null,           yiqtol:["יָקְטַל"],  infcon:["הָקְטַל"],   participle:["מָקְטָל"]  } },
+    { root:"קטל", stem:"Hitpael", forms:{ qatal:["הִתְקַטֵּל"], qatal2ms:["הִתְקַטַּלְתָּ"], yiqtol:["יִתְקַטֵּל"], infcon:["הִתְקַטֵּל"], participle:["מִתְקַטֵּל"] } }
+  ]
+};
+
+/* ============================================================================
+   2. Vocabulary — slot names, stem order, confusable stem pairs
+============================================================================ */
+
+const SLOTS = [
+  { key:"qatal",      label:"Qatal",      full:"Qatal (3ms)" },
+  { key:"qatal2ms",   label:"Qatal 2ms",  full:"Qatal (2ms)" },
+  { key:"yiqtol",     label:"Yiqtol",     full:"Yiqtol (3ms)" },
+  { key:"infcon",     label:"Inf. Con.",  full:"Infinitive construct" },
+  { key:"participle", label:"Participle", full:"Participle (ms)" }
+];
+const SLOT_BY_KEY = Object.fromEntries(SLOTS.map(s => [s.key, s]));
+
+const STEMS = ["Qal","Niphal","Piel","Pual","Hiphil","Hophal","Hitpael"];
+
+/* Stems worth confusing with each other — used to pick distractors that train
+   the distinctions that actually cost marks. */
+const NEIGHBOURS = {
+  Qal:["Niphal"],
+  Niphal:["Qal","Hophal"],
+  Piel:["Pual","Hitpael"],
+  Pual:["Piel","Hophal"],
+  Hiphil:["Hophal"],
+  Hophal:["Hiphil","Pual","Niphal"],
+  Hitpael:["Piel"]
+};
+
+/* ============================================================================
+   3. Storage — localStorage where available, plain memory where not
+============================================================================ */
+
+const Store = (function(){
+  let live = true, mem = {};
+  try {
+    const probe = "__hebdrill_probe__";
+    window.localStorage.setItem(probe, "1");
+    window.localStorage.removeItem(probe);
+  } catch(e) { live = false; }
+  return {
+    available: live,
+    get(key, fallback){
+      try {
+        const raw = live ? window.localStorage.getItem(key) : mem[key];
+        return raw == null ? fallback : JSON.parse(raw);
+      } catch(e){ return fallback; }
+    },
+    set(key, value){
+      try {
+        const raw = JSON.stringify(value);
+        if (live) window.localStorage.setItem(key, raw); else mem[key] = raw;
+      } catch(e){ /* quota or serialisation — carry on in memory */
+        try { mem[key] = JSON.stringify(value); } catch(e2){}
+      }
+    }
+  };
+})();
+
+const K_SETTINGS = "hebdrill.settings.v1";
+const K_STATS    = "hebdrill.stats.v1";
+
+/* ============================================================================
+   4. Item index — one drillable item per (root, stem, slot) with a form
+============================================================================ */
+
+const ITEMS = [];
+const BY_FORM = new Map();   // pointed form -> [items] (forms can be ambiguous)
+
+(function buildItems(){
+  const entries = VERB_DATA.qal.concat(VERB_DATA.derived);
+  entries.forEach(entry => {
+    SLOTS.forEach(slot => {
+      const forms = entry.forms[slot.key];
+      if (!forms || !forms.length) return;
+      const item = {
+        id: entry.stem + "|" + entry.root + "|" + slot.key,
+        root: entry.root,
+        stem: entry.stem,
+        slot: slot.key,
+        forms: forms.slice(),
+        form: forms[0]
+      };
+      ITEMS.push(item);
+      forms.forEach(f => {
+        if (!BY_FORM.has(f)) BY_FORM.set(f, []);
+        BY_FORM.get(f).push(item);
+      });
+    });
+  });
+})();
+
+const QAL_ROOTS = VERB_DATA.qal.map(e => e.root);
+const AVAILABLE_STEMS = STEMS.filter(s => ITEMS.some(i => i.stem === s));
+const AVAILABLE_SLOTS = SLOTS.filter(s => ITEMS.some(i => i.slot === s.key));
+
+function findItem(root, stem, slot){
+  return ITEMS.find(i => i.root === root && i.stem === stem && i.slot === slot) || null;
+}
+/* Every analysis that a given pointed form legitimately has. Several forms are
+   genuinely ambiguous (Hophal qatal and inf. con. are both הָקְטַל), so parsing
+   answers are graded against the whole set. */
+function analysesFor(form){ return BY_FORM.get(form) || []; }
+
+/* ============================================================================
+   5. Settings
+============================================================================ */
+
+const DEFAULTS = {
+  stems: AVAILABLE_STEMS.slice(),
+  roots: QAL_ROOTS.slice(),
+  slots: AVAILABLE_SLOTS.map(s => s.key),
+  mode: "parts",        // "parts" | "parsing"
+  style: "mc",          // "mc" | "reveal"
+  length: 20            // number, or 0 for endless
+};
+
+let settings = Object.assign({}, DEFAULTS, Store.get(K_SETTINGS, {}));
+settings.stems = settings.stems.filter(s => AVAILABLE_STEMS.includes(s));
+settings.roots = settings.roots.filter(r => QAL_ROOTS.includes(r));
+settings.slots = settings.slots.filter(s => AVAILABLE_SLOTS.some(x => x.key === s));
+if (!settings.stems.length) settings.stems = AVAILABLE_STEMS.slice();
+if (!settings.roots.length) settings.roots = QAL_ROOTS.slice();
+if (!settings.slots.length) settings.slots = AVAILABLE_SLOTS.map(s => s.key);
+
+function saveSettings(){ Store.set(K_SETTINGS, settings); }
+
+/* The root filter applies to the Qal table only; the derived stems exist for
+   קטל alone, so filtering them by root would just switch them off. */
+function pool(){
+  return ITEMS.filter(i =>
+    settings.stems.includes(i.stem) &&
+    settings.slots.includes(i.slot) &&
+    (i.stem !== "Qal" || settings.roots.includes(i.root))
+  );
+}
+
+/* ============================================================================
+   6. Cumulative stats
+============================================================================ */
+
+let stats = Store.get(K_STATS, { items:{}, sessions:0, seen:0, correct:0 });
+function recordStat(item, ok){
+  const s = stats.items[item.id] || (stats.items[item.id] = { seen:0, correct:0 });
+  s.seen++; if (ok) s.correct++;
+  stats.seen++; if (ok) stats.correct++;
+  Store.set(K_STATS, stats);
+}
+
+/* ============================================================================
+   7. Helpers
+============================================================================ */
+
+function el(tag, cls, text){
+  const n = document.createElement(tag);
+  if (cls) n.className = cls;
+  if (text != null) n.textContent = text;
+  return n;
+}
+function hebSpan(form, cls){
+  const n = el("span", cls || "he", form);
+  n.setAttribute("dir","rtl"); n.setAttribute("lang","he");
+  return n;
+}
+function shuffle(a){
+  for (let i = a.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+function pick(a){ return a[Math.floor(Math.random() * a.length)]; }
+function mmss(ms){
+  const t = Math.max(0, Math.round(ms / 1000));
+  return Math.floor(t / 60) + ":" + String(t % 60).padStart(2, "0");
+}
+function pct(c, n){ return n ? Math.round(100 * c / n) + "%" : "—"; }
+
+/* ============================================================================
+   8. Distractors
+   ----------------------------------------------------------------------------
+   Never a random Hebrew word. In priority order:
+     a) same root + slot in a neighbouring stem  (Piel/Pual, Hiphil/Hophal, …)
+     b) same slot, different root                (a different verb class)
+     c) same root + stem, different slot
+     d) the correct form with one vowel changed, or one dagesh dropped
+============================================================================ */
+
+const VOWEL_SWAPS = {
+  "\u05B7":["\u05B8","\u05B6"],           // patach   -> qamats, segol
+  "\u05B8":["\u05B7","\u05B9"],           // qamats   -> patach, holam
+  "\u05B5":["\u05B6","\u05B4"],           // tsere    -> segol, hiriq
+  "\u05B6":["\u05B5","\u05B7"],           // segol    -> tsere, patach
+  "\u05B4":["\u05B5","\u05B0"],           // hiriq    -> tsere, sheva
+  "\u05B9":["\u05BB","\u05B8"],           // holam    -> qibbuts, qamats
+  "\u05BB":["\u05B9","\u05B7"],           // qibbuts  -> holam, patach
+  "\u05B0":["\u05B4","\u05B7"],           // sheva    -> hiriq, patach
+  "\u05B1":["\u05B6"],                    // hataf segol -> segol
+  "\u05B2":["\u05B7"],                    // hataf patach -> patach
+  "\u05B3":["\u05B8"]                     // hataf qamats -> qamats
+};
+
+function mutateVowel(form, taken){
+  const idx = [];
+  for (let i = 0; i < form.length; i++) if (VOWEL_SWAPS[form[i]]) idx.push(i);
+  shuffle(idx);
+  for (const i of idx){
+    for (const v of shuffle(VOWEL_SWAPS[form[i]].slice())){
+      const cand = form.slice(0, i) + v + form.slice(i + 1);
+      if (cand !== form && !taken.has(cand)) return cand;
+    }
+  }
+  return null;
+}
+function dropDagesh(form, taken){
+  for (let i = 1; i < form.length; i++){
+    /* skip the dagesh that makes a vav into shureq — removing it wrecks the word */
+    if (form[i] === "\u05BC" && form[i-1] !== "\u05D5"){
+      const cand = form.slice(0, i) + form.slice(i + 1);
+      if (!taken.has(cand)) return cand;
+    }
+  }
+  return null;
+}
+
+function formDistractors(item, want){
+  const taken = new Set(item.forms);
+  const out = [];
+  const push = f => { if (f && !taken.has(f)) { taken.add(f); out.push(f); } };
+
+  shuffle((NEIGHBOURS[item.stem] || []).slice()).forEach(st => {
+    if (out.length >= want) return;
+    const n = findItem(item.root, st, item.slot);
+    if (n) push(n.form);
+  });
+  if (out.length < want){
+    shuffle(ITEMS.filter(i => i.slot === item.slot && i.stem === item.stem && i.root !== item.root))
+      .slice(0, want).forEach(i => { if (out.length < want) push(i.form); });
+  }
+  if (out.length < want){
+    shuffle(ITEMS.filter(i => i.root === item.root && i.stem === item.stem && i.slot !== item.slot))
+      .forEach(i => { if (out.length < want) push(i.form); });
+  }
+  if (out.length < want){
+    shuffle(ITEMS.filter(i => i.slot === item.slot && i.root !== item.root))
+      .forEach(i => { if (out.length < want) push(i.form); });
+  }
+  let guard = 0;
+  while (out.length < want && guard++ < 24){
+    push(mutateVowel(item.form, taken) || dropDagesh(item.form, taken));
+  }
+  return out.slice(0, want);
+}
+
+/* For parsing, the distractors are analyses. Any analysis that the prompt form
+   legitimately has is excluded — otherwise a "wrong" option would be right. */
+function analysisDistractors(item, want){
+  const valid = new Set(analysesFor(item.form).map(i => i.id));
+  const seen = new Set(valid);
+  const out = [];
+  const push = i => { if (i && !seen.has(i.id)) { seen.add(i.id); out.push(i); } };
+
+  (NEIGHBOURS[item.stem] || []).forEach(st => push(findItem(item.root, st, item.slot)));
+  shuffle(ITEMS.filter(i => i.root === item.root && i.stem === item.stem)).forEach(push);
+  shuffle(ITEMS.filter(i => i.slot === item.slot && i.root !== item.root)).forEach(push);
+  shuffle(ITEMS.slice()).forEach(push);
+  return shuffle(out.slice(0, Math.max(want * 2, 6))).slice(0, want);
+}
+
+/* ============================================================================
+   9. Session engine
+============================================================================ */
+
+let S = null;   // the running session, or null
+
+function startSession(){
+  const items = pool();
+  S = {
+    items,
+    weight: Object.fromEntries(items.map(i => [i.id, 1])),
+    requeue: [],
+    sinceRequeue: 0,
+    lastId: null,
+    asked: 0,
+    correct: 0,
+    log: [],                       // {item, ok}
+    target: settings.length || 0,  // 0 = endless
+    started: Date.now(),
+    current: null,
+    answered: false
+  };
+  stats.sessions++; Store.set(K_STATS, stats);
+  nextQuestion();
+}
+
+function nextQuestion(){
+  if (S.target && S.asked >= S.target) return renderSummary();
+  const item = choose();
+  if (!item) return renderSummary();
+
+  const q = { item: item, answered: false, ok: null, revealed: false, options: null };
+
+  if (settings.style === "mc"){
+    if (settings.mode === "parts"){
+      const opts = formDistractors(item, 3).map(f => ({ form:f, right:false }));
+      opts.push({ form:item.form, right:true });
+      q.options = shuffle(opts);
+    } else {
+      const opts = analysisDistractors(item, 3).map(a => ({ analysis:a, right:false }));
+      opts.push({ analysis:item, right:true });
+      q.options = shuffle(opts);
+    }
+  }
+  S.current = q;
+  S.lastId = item.id;
+  renderDrill();
+}
+
+function choose(){
+  if (!S.items.length) return null;
+  S.sinceRequeue++;
+  if (S.requeue.length && S.sinceRequeue >= 3){
+    S.sinceRequeue = 0;
+    return S.requeue.shift();
+  }
+  const candidates = S.items.length > 1 ? S.items.filter(i => i.id !== S.lastId) : S.items;
+  let total = 0;
+  candidates.forEach(i => total += S.weight[i.id]);
+  let r = Math.random() * total;
+  for (const i of candidates){ r -= S.weight[i.id]; if (r <= 0) return i; }
+  return candidates[candidates.length - 1];
+}
+
+function grade(ok){
+  const q = S.current;
+  if (q.answered) return;
+  q.answered = true; q.ok = ok;
+  S.asked++;
+  if (ok) S.correct++;
+  S.log.push({ item:q.item, ok:ok });
+  recordStat(q.item, ok);
+
+  const id = q.item.id;
+  if (ok) {
+    S.weight[id] = Math.max(1, S.weight[id] * 0.6);
+  } else {
+    S.weight[id] = Math.min(10, S.weight[id] * 3);
+    if (!S.requeue.some(i => i.id === id)) S.requeue.push(q.item);
+  }
+  renderDrill();
+  updateMeter();
+}
+
+/* ============================================================================
+   10. Rendering
+============================================================================ */
+
+const app     = document.getElementById("app");
+const strip   = document.getElementById("strip");
+const meter   = document.getElementById("meter");
+const btnSet  = document.getElementById("btnSettings");
+let timer = null;
+
+function updateMeter(){
+  if (!S){ meter.hidden = true; return; }
+  meter.hidden = false;
+  document.getElementById("mScore").textContent = S.correct;
+  document.getElementById("mSeen").textContent  = S.asked;
+  document.getElementById("mTime").textContent  = mmss(Date.now() - S.started);
+}
+function updateStrip(){
+  if (!S){ strip.hidden = true; return; }
+  strip.hidden = false;
+  strip.className = "strip" + (S.target ? "" : " endless");
+  strip.innerHTML = "";
+  if (!S.target) return;
+  for (let i = 0; i < S.target; i++){
+    const cell = el("i");
+    if (i < S.log.length) cell.className = S.log[i].ok ? "hit" : "miss";
+    else if (i === S.log.length) cell.className = "now";
+    strip.appendChild(cell);
+  }
+}
+
+/* ---------- the paradigm-sheet excerpt ---------- */
+function sheetExcerpt(opts){
+  const box = el("div", "sheet" + (opts.reveal ? " reveal" : ""));
+  box.appendChild(el("div","corner"));
+  const ch = el("div","colhead", opts.colhead);
+  box.appendChild(ch);
+  const rh = el("div","rowhead");
+  if (opts.rootHidden) rh.appendChild(el("div","root","?"));
+  else rh.appendChild(hebSpan(opts.root, "root"));
+  rh.appendChild(el("div","stem", opts.stem));
+  box.appendChild(rh);
+  const cell = el("div","cell");
+  if (opts.form) cell.appendChild(hebSpan(opts.form, "form"));
+  else cell.appendChild(el("div","blank","?"));
+  box.appendChild(cell);
+  return box;
+}
+
+function analysisLabel(item){
+  const wrap = el("span","analysis");
+  wrap.appendChild(hebSpan(item.root));
+  wrap.appendChild(document.createTextNode(" · " + item.stem + " · " + SLOT_BY_KEY[item.slot].full));
+  return wrap;
+}
+
+function renderDrill(){
+  const q = S.current, item = q.item;
+  app.innerHTML = "";
+  btnSet.hidden = false;
+  updateMeter(); updateStrip();
+
+  const frame = el("div","fade");
+  const showForm = (settings.mode === "parsing") || q.answered || q.revealed;
+
+  frame.appendChild(sheetExcerpt({
+    colhead: settings.mode === "parsing" && !showForm ? "?" :
+             (settings.mode === "parsing" && !q.answered && !q.revealed ? "?" :
+              SLOT_BY_KEY[item.slot].label),
+    root: item.root,
+    stem: item.stem,
+    rootHidden: false,
+    form: showForm ? item.form : null,
+    reveal: q.revealed && !q.answered
+  }));
+
+  /* In parsing mode the headers are what's being asked, so hide them until
+     the answer is in. Rebuild that cell here rather than branching above. */
+  if (settings.mode === "parsing" && !q.answered && !q.revealed){
+    const sheet = frame.querySelector(".sheet");
+    sheet.querySelector(".colhead").textContent = "?";
+    sheet.querySelector(".rowhead").innerHTML = "";
+    sheet.querySelector(".rowhead").appendChild(el("div","root","?"));
+    sheet.querySelector(".rowhead").appendChild(el("div","stem","which stem?"));
+    sheet.querySelector(".cell").innerHTML = "";
+    sheet.querySelector(".cell").appendChild(hebSpan(item.form,"form"));
+  }
+
+  if (settings.style === "mc") renderMC(frame, q);
+  else renderReveal(frame, q);
+
+  app.appendChild(frame);
+}
+
+function renderMC(frame, q){
+  const box = el("div","opts");
+  q.options.forEach((o, n) => {
+    const b = el("button","opt");
+    b.appendChild(el("span","num", String(n + 1)));
+    if (settings.mode === "parts") b.appendChild(hebSpan(o.form,"heb"));
+    else b.appendChild(analysisLabel(o.analysis));
+    if (q.answered){
+      b.disabled = true;
+      const isRight = settings.mode === "parts"
+        ? q.item.forms.includes(o.form)
+        : analysesFor(q.item.form).some(a => a.id === o.analysis.id);
+      if (isRight) b.classList.add("right");
+      else if (o === q.chosen) b.classList.add("wrong");
+    } else {
+      b.addEventListener("click", () => { q.chosen = o; grade(isCorrectOption(q, o)); });
+    }
+    box.appendChild(b);
+  });
+  frame.appendChild(box);
+
+  if (q.answered){
+    frame.appendChild(verdictLine(q));
+    const acts = el("div","actions");
+    const next = el("button","primary","Next");
+    next.addEventListener("click", nextQuestion);
+    acts.appendChild(next);
+    frame.appendChild(acts);
+  }
+  frame.appendChild(hintLine(q));
+}
+
+function isCorrectOption(q, o){
+  return settings.mode === "parts"
+    ? q.item.forms.includes(o.form)
+    : analysesFor(q.item.form).some(a => a.id === o.analysis.id);
+}
+
+function renderReveal(frame, q){
+  const acts = el("div","actions");
+  if (!q.revealed){
+    const b = el("button","primary","Reveal");
+    b.addEventListener("click", () => { q.revealed = true; renderDrill(); });
+    acts.appendChild(b);
+  } else if (!q.answered){
+    const yes = el("button","primary","Got it");
+    yes.addEventListener("click", () => grade(true));
+    const no = el("button",null,"Missed it");
+    no.addEventListener("click", () => grade(false));
+    acts.appendChild(yes); acts.appendChild(no);
+  } else {
+    const next = el("button","primary","Next");
+    next.addEventListener("click", nextQuestion);
+    acts.appendChild(next);
+  }
+
+  if (q.revealed || q.answered){
+    const ans = el("div","note");
+    if (settings.mode === "parts"){
+      ans.appendChild(document.createTextNode("Answer: "));
+      q.item.forms.forEach((f, i) => {
+        if (i) ans.appendChild(document.createTextNode(", "));
+        ans.appendChild(hebSpan(f));
+      });
+    } else {
+      const all = analysesFor(q.item.form);
+      ans.appendChild(document.createTextNode(all.length > 1 ? "This form is ambiguous: " : "Answer: "));
+      all.forEach((a, i) => {
+        if (i) ans.appendChild(document.createTextNode("  |  "));
+        ans.appendChild(analysisLabel(a));
+      });
+    }
+    frame.appendChild(ans);
+  }
+  frame.appendChild(acts);
+  if (q.answered) frame.appendChild(verdictLine(q));
+  frame.appendChild(hintLine(q));
+}
+
+function verdictLine(q){
+  const n = el("div","note");
+  const v = el("span","verdict " + (q.ok ? "ok" : "no"), q.ok ? "Got it." : "Missed — this one comes back.");
+  n.appendChild(v);
+  if (settings.mode === "parts" && q.item.forms.length > 1){
+    n.appendChild(document.createTextNode("  Both forms occur: "));
+    q.item.forms.forEach((f, i) => {
+      if (i) n.appendChild(document.createTextNode(", "));
+      n.appendChild(hebSpan(f));
+    });
+  }
+  if (settings.mode === "parsing" && analysesFor(q.item.form).length > 1){
+    n.appendChild(document.createTextNode("  This form has more than one analysis; any of them counts."));
+  }
+  return n;
+}
+
+function hintLine(q){
+  const h = el("div","hint");
+  const bits = [];
+  if (settings.style === "mc" && !q.answered) bits.push("<kbd>1</kbd>–<kbd>4</kbd> choose");
+  if (settings.style === "reveal" && !q.revealed) bits.push("<kbd>space</kbd> reveal");
+  if (settings.style === "reveal" && q.revealed && !q.answered)
+    bits.push("<kbd>Y</kbd>/<kbd>→</kbd> got it", "<kbd>N</kbd>/<kbd>←</kbd> missed");
+  if (q.answered) bits.push("<kbd>space</kbd> next");
+  h.innerHTML = bits.join(" &nbsp;·&nbsp; ");
+  return h;
+}
+
+/* ---------- settings panel ---------- */
+function renderSettings(resumable){
+  app.innerHTML = "";
+  btnSet.hidden = true;
+  const p = el("div","panel fade");
+
+  p.appendChild(el("h2", null, resumable ? "Settings" : "Set up a session"));
+  const lede = el("p","lede", resumable
+    ? "Changes apply to the rest of this session."
+    : "Garrett ch. 21: fourteen roots in Qal, and the six derived stems on קטל.");
+  p.appendChild(lede);
+
+  p.appendChild(chipSet("Stems", AVAILABLE_STEMS.map(s => ({ value:s, label:s })),
+    settings.stems, v => settings.stems = v, [
+      ["All", () => AVAILABLE_STEMS.slice()],
+      ["Qal only", () => ["Qal"]],
+      ["Derived only", () => AVAILABLE_STEMS.filter(s => s !== "Qal")]
+    ]));
+
+  p.appendChild(chipSet("Roots (Qal table)", QAL_ROOTS.map(r => ({ value:r, label:r, hebrew:true })),
+    settings.roots, v => settings.roots = v, [
+      ["All", () => QAL_ROOTS.slice()],
+      ["Strong only", () => ["קטל"]]
+    ]));
+
+  p.appendChild(chipSet("Principal parts", AVAILABLE_SLOTS.map(s => ({ value:s.key, label:s.full })),
+    settings.slots, v => settings.slots = v, [
+      ["All", () => AVAILABLE_SLOTS.map(s => s.key)],
+      ["Four core", () => ["qatal","yiqtol","infcon","participle"]]
+    ]));
+
+  p.appendChild(radioSet("Drill", [
+    { value:"parts",   label:"Principal parts — given root and slot, produce the form" },
+    { value:"parsing", label:"Parsing — given a form, identify root, stem and slot" }
+  ], settings.mode, v => settings.mode = v));
+
+  p.appendChild(radioSet("Answering", [
+    { value:"mc",     label:"Multiple choice" },
+    { value:"reveal", label:"Reveal and self-grade" }
+  ], settings.style, v => settings.style = v));
+
+  p.appendChild(radioSet("Session length", [
+    { value:10, label:"10" }, { value:20, label:"20" },
+    { value:30, label:"30" }, { value:50, label:"50" },
+    { value:0,  label:"Endless" }
+  ], settings.length, v => settings.length = v));
+
+  const row = el("div","startrow");
+  const go = el("button","primary", resumable ? "Apply and resume" : "Start");
+  go.addEventListener("click", () => {
+    saveSettings();
+    if (!pool().length){ warn.textContent = "Nothing selected — pick at least one stem and one principal part."; return; }
+    if (resumable){ S.items = pool(); S.items.forEach(i => { if (!(i.id in S.weight)) S.weight[i.id] = 1; }); nextQuestion(); }
+    else startSession();
+  });
+  row.appendChild(go);
+
+  if (resumable){
+    const end = el("button", null, "End session");
+    end.addEventListener("click", () => { saveSettings(); renderSummary(); });
+    row.appendChild(end);
+  }
+  const count = el("span","lede", pool().length + " items selected");
+  count.style.margin = "0";
+  row.appendChild(count);
+  const warn = el("span","warn");
+  row.appendChild(warn);
+  p.appendChild(row);
+
+  if (stats.seen){
+    const s = el("div","hint");
+    s.textContent = "All time: " + stats.correct + " right of " + stats.seen +
+      " (" + pct(stats.correct, stats.seen) + ") over " + stats.sessions + " sessions." +
+      (Store.available ? "" : "  Storage is unavailable, so this resets when you close the tab.");
+    p.appendChild(s);
+  }
+  app.appendChild(p);
+}
+
+function chipSet(legendText, options, selected, onChange, shortcuts){
+  const fs = el("fieldset");
+  fs.appendChild(el("legend", null, legendText));
+  const box = el("div","chips");
+  const state = new Set(selected);
+  const redraw = () => {
+    box.innerHTML = "";
+    options.forEach(o => {
+      const lab = el("label","chip" + (state.has(o.value) ? " on" : ""));
+      const cb = document.createElement("input");
+      cb.type = "checkbox"; cb.checked = state.has(o.value);
+      cb.addEventListener("change", () => {
+        if (cb.checked) state.add(o.value); else state.delete(o.value);
+        onChange(Array.from(state)); redraw(); refreshCount();
+      });
+      lab.appendChild(cb);
+      if (o.hebrew) lab.appendChild(hebSpan(o.label));
+      else lab.appendChild(document.createTextNode(o.label));
+      box.appendChild(lab);
+    });
+  };
+  redraw();
+  fs.appendChild(box);
+  if (shortcuts){
+    const sc = el("div","shortcuts");
+    shortcuts.forEach(([label, fn]) => {
+      const b = el("button", null, label);
+      b.addEventListener("click", () => {
+        state.clear(); fn().forEach(v => state.add(v));
+        onChange(Array.from(state)); redraw(); refreshCount();
+      });
+      sc.appendChild(b);
+    });
+    fs.appendChild(sc);
+  }
+  return fs;
+}
+
+function radioSet(legendText, options, current, onChange){
+  const fs = el("fieldset");
+  fs.appendChild(el("legend", null, legendText));
+  const box = el("div","chips");
+  const redraw = () => {
+    box.innerHTML = "";
+    options.forEach(o => {
+      const lab = el("label","chip" + (o.value === current ? " on" : ""));
+      const rb = document.createElement("input");
+      rb.type = "radio"; rb.name = legendText; rb.checked = o.value === current;
+      rb.addEventListener("change", () => { current = o.value; onChange(o.value); redraw(); refreshCount(); });
+      lab.appendChild(rb);
+      lab.appendChild(document.createTextNode(o.label));
+      box.appendChild(lab);
+    });
+  };
+  redraw();
+  fs.appendChild(box);
+  return fs;
+}
+
+function refreshCount(){
+  const n = document.querySelector(".startrow .lede");
+  if (n) n.textContent = pool().length + " items selected";
+}
+
+/* ---------- summary ---------- */
+function renderSummary(){
+  const elapsed = Date.now() - S.started;
+  app.innerHTML = "";
+  strip.hidden = true; meter.hidden = true; btnSet.hidden = true;
+  if (timer){ clearInterval(timer); timer = null; }
+
+  const p = el("div","panel fade");
+  p.appendChild(el("h2", null, "Session summary"));
+  const big = el("div","bigscore");
+  big.appendChild(document.createTextNode(S.correct + " / " + S.asked + " "));
+  big.appendChild(el("small", null, pct(S.correct, S.asked)));
+  p.appendChild(big);
+  p.appendChild(el("p","lede", mmss(elapsed) + " elapsed" +
+    (S.asked ? " · " + Math.round(elapsed / 1000 / S.asked) + "s per item" : "")));
+
+  p.appendChild(breakdown("By stem", i => i.stem));
+  p.appendChild(breakdown("By root", i => i.root, true));
+  p.appendChild(breakdown("By principal part", i => SLOT_BY_KEY[i.slot].full));
+
+  const missed = [];
+  S.log.forEach(e => { if (!e.ok && !missed.some(m => m.id === e.item.id)) missed.push(e.item); });
+  if (missed.length){
+    const fs = el("fieldset");
+    fs.appendChild(el("legend", null, "Missed at least once"));
+    const list = el("div","chips");
+    missed.forEach(m => {
+      const c = el("span","chip");
+      c.appendChild(hebSpan(m.form));
+      c.appendChild(document.createTextNode(" " + m.stem + " " + SLOT_BY_KEY[m.slot].label));
+      list.appendChild(c);
+    });
+    fs.appendChild(list);
+    p.appendChild(fs);
+  }
+
+  const row = el("div","startrow");
+  const again = el("button","primary","Run it again");
+  again.addEventListener("click", () => startSession());
+  const change = el("button", null, "Change settings");
+  change.addEventListener("click", () => { S = null; renderSettings(false); });
+  row.appendChild(again); row.appendChild(change);
+  p.appendChild(row);
+  app.appendChild(p);
+  S.finished = true;
+}
+
+function breakdown(title, keyFn, hebrew){
+  const fs = el("fieldset");
+  fs.appendChild(el("legend", null, title));
+  const agg = new Map();
+  S.log.forEach(e => {
+    const k = keyFn(e.item);
+    const a = agg.get(k) || { n:0, c:0 };
+    a.n++; if (e.ok) a.c++;
+    agg.set(k, a);
+  });
+  const t = el("table","sum");
+  const head = el("tr");
+  ["", "Right", "Asked", ""].forEach(h => head.appendChild(el("th", null, h)));
+  t.appendChild(head);
+  Array.from(agg.entries())
+    .sort((a, b) => (a[1].c / a[1].n) - (b[1].c / b[1].n))
+    .forEach(([k, a]) => {
+      const tr = el("tr");
+      if (hebrew){ const td = el("td","he"); td.appendChild(hebSpan(k)); tr.appendChild(td); }
+      else tr.appendChild(el("td", null, k));
+      tr.appendChild(el("td", null, String(a.c)));
+      tr.appendChild(el("td", null, String(a.n)));
+      tr.appendChild(el("td","pct", pct(a.c, a.n)));
+      t.appendChild(tr);
+    });
+  fs.appendChild(t);
+  return fs;
+}
+
+/* ============================================================================
+   11. Keyboard
+============================================================================ */
+
+document.addEventListener("keydown", e => {
+  if (!S || S.finished || !S.current) return;
+  if (document.querySelector(".panel")) return;      // settings open
+  const q = S.current;
+  const k = e.key;
+
+  if (settings.style === "mc" && !q.answered && /^[1-4]$/.test(k)){
+    const o = q.options[Number(k) - 1];
+    if (o){ e.preventDefault(); q.chosen = o; grade(isCorrectOption(q, o)); }
+    return;
+  }
+  if (k === " " || k === "Spacebar"){
+    e.preventDefault();
+    if (q.answered) nextQuestion();
+    else if (settings.style === "reveal" && !q.revealed){ q.revealed = true; renderDrill(); }
+    return;
+  }
+  if (k === "Enter" && q.answered){ e.preventDefault(); nextQuestion(); return; }
+  if (settings.style === "reveal" && q.revealed && !q.answered){
+    if (k === "y" || k === "Y" || k === "ArrowRight"){ e.preventDefault(); grade(true); }
+    if (k === "n" || k === "N" || k === "ArrowLeft"){ e.preventDefault(); grade(false); }
+  }
+});
+
+btnSet.addEventListener("click", () => renderSettings(true));
+
+/* ============================================================================
+   12. Go
+============================================================================ */
+
+timer = setInterval(() => { if (S && !S.finished) updateMeter(); }, 1000);
+renderSettings(false);
+</script>
+</body>
+</html>
