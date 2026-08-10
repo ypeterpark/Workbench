@@ -169,6 +169,10 @@
    Each app lives in its own folder with its file named
    index.html, so the link is just the folder name — for a
    folder called "star-charts/", the link is "star-charts/".
+
+   AVOID SPACES IN FOLDER NAMES. A space becomes %20 in the
+   address bar, and some apps break the link when you paste it
+   into a message. A hyphen is safer: "character-forge/".
    ───────────────────────────────────────────────────────────── */
 
 var APPS = [
@@ -178,6 +182,13 @@ var APPS = [
     name: "Hebrew Verb Drills",
     tag:  "Study",
     desc: "Principal parts and parsing practice across the seven stems. Choose your stems and roots, drill by multiple choice or self-grade."
+  },
+
+  {
+    file: "character-forge/",
+    name: "Character Forge",
+    tag:  "Tabletop",
+    desc: "Build a fifth-edition character step by step, or roll a complete one instantly. Any level, all four ability score methods, and a printable sheet with room for a picture."
   },
 
   {
@@ -200,13 +211,17 @@ var APPS = [
     });
   }
 
+  function href(s){
+    return esc(String(s).replace(/ /g, "%20"));
+  }
+
   if(!APPS.length){
     list.innerHTML = '<li><div class="empty">No apps listed yet.</div></li>';
     return;
   }
 
   list.innerHTML = APPS.map(function(a){
-    return '<li><a class="app" href="' + esc(a.file) + '">' +
+    return '<li><a class="app" href="' + href(a.file) + '">' +
              '<div class="app-head">' +
                '<span class="app-name">' + esc(a.name) + '</span>' +
                (a.tag ? '<span class="app-tag">' + esc(a.tag) + '</span>' : '') +
