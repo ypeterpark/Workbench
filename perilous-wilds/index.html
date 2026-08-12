@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ask the Fates — a Perilous Wilds companion</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=Alegreya:ital,wght@0,400;0,500;0,700;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0e100c;
+  --ink2:#171a14;
+  --ink3:#1f2319;
+  --rule:#3b4033;
+  --chalk:#ece7d8;
+  --dim:#9c9784;
+  --brass:#c8a24a;
+  --moss:#8aa46e;
+  --rust:#b4573f;
+  --pane-max:1500px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--ink);
+  color:var(--chalk);
+  font-family:Alegreya,Georgia,'Times New Roman',serif;
+  font-size:17px;line-height:1.5;
+  -webkit-text-size-adjust:100%;
+}
+h1,h2,h3,.fell{font-family:'IM Fell English SC',Georgia,serif;font-weight:400;letter-spacing:.01em}
+.mono{font-family:'Space Mono',ui-monospace,Menlo,monospace}
+
+/* ---------- shell ---------- */
+.wrap{max-width:var(--pane-max);margin:0 auto;padding:0 18px 80px}
+header.masthead{
+  border-bottom:1px solid var(--rule);
+  padding:22px 0 14px;margin-bottom:18px;
+  display:flex;align-items:baseline;gap:16px;flex-wrap:wrap;
+}
+.masthead h1{font-size:30px;margin:0;line-height:1}
+.masthead .sub{color:var(--dim);font-style:italic;font-size:15px}
+.masthead .credit{margin-left:auto;font-size:12px;color:var(--dim)}
+.masthead .credit a{color:var(--moss)}
+
+.cols{display:grid;grid-template-columns:230px minmax(0,1fr) 330px;gap:26px;align-items:start}
+
+/* ---------- index (contents page w/ dot leaders) ---------- */
+nav.index{position:sticky;top:12px}
+nav.index .eyebrow{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim);margin-bottom:10px}
+nav.index button{
+  display:flex;width:100%;align-items:baseline;gap:6px;
+  background:none;border:0;padding:7px 0;cursor:pointer;
+  color:var(--chalk);font-family:'IM Fell English SC',Georgia,serif;font-size:19px;text-align:left;
+}
+nav.index button .leader{flex:1;border-bottom:1px dotted var(--rule);transform:translateY(-4px)}
+nav.index button .num{font-family:'Space Mono',monospace;font-size:12px;color:var(--dim)}
+nav.index button:hover{color:var(--brass)}
+nav.index button[aria-current="true"]{color:var(--brass)}
+nav.index button[aria-current="true"] .num{color:var(--brass)}
+
+/* ---------- main panel ---------- */
+section.deck{display:none}
+section.deck.on{display:block}
+.deck > h2{font-size:26px;margin:0 0 2px}
+.deck > .blurb{color:var(--dim);font-style:italic;margin:0 0 20px;font-size:15px}
+
+.card{border:1px solid var(--rule);background:var(--ink2);padding:14px 16px 16px;margin-bottom:14px}
+.card h3{font-size:19px;margin:0 0 4px}
+.card p.note{margin:0 0 10px;color:var(--dim);font-size:14.5px}
+
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+button.roll{
+  font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;
+  background:var(--ink3);color:var(--chalk);border:1px solid var(--rule);
+  padding:8px 12px;cursor:pointer;
+}
+button.roll:hover{border-color:var(--brass);color:var(--brass)}
+button.roll.primary{border-color:var(--brass);color:var(--brass)}
+button.roll.primary:hover{background:var(--brass);color:var(--ink)}
+button.roll.ghost{border-style:dashed}
+button.roll:focus-visible,nav.index button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
+select,input[type=text],input[type=number]{
+  background:var(--ink);color:var(--chalk);border:1px solid var(--rule);
+  padding:7px 8px;font-family:'Space Mono',monospace;font-size:12px;
+}
+label.inline{font-size:13px;color:var(--dim);display:flex;align-items:center;gap:6px}
+label.chk{font-size:13px;color:var(--chalk);display:flex;align-items:center;gap:6px;border:1px solid var(--rule);padding:5px 8px}
+label.chk input{accent-color:var(--brass)}
+
+/* ---------- the plate (signature) ---------- */
+.plate{border:1px solid var(--brass);padding:3px;margin:0 0 18px;background:var(--ink2)}
+.plate .inner{border:1px solid var(--rule);padding:16px 18px 18px}
+.plate .kicker{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--brass);margin-bottom:6px}
+.plate .headline{font-family:'IM Fell English SC',Georgia,serif;font-size:29px;line-height:1.15;margin:0 0 4px}
+.plate .headline.danger{color:var(--rust)}
+.plate .headline.discovery{color:var(--moss)}
+.plate .body p{margin:8px 0 0}
+.plate .body ul{margin:8px 0 0;padding-left:20px}
+.plate .body li{margin:3px 0}
+.plate .body .lbl{color:var(--dim);font-size:13px;font-family:'Space Mono',monospace;letter-spacing:.04em}
+.plate .empty{color:var(--dim);font-style:italic}
+.chain{margin-top:14px;padding-top:10px;border-top:1px dotted var(--rule);
+  font-family:'Space Mono',monospace;font-size:11.5px;color:var(--dim);line-height:1.9}
+.chain span.die{color:var(--brass)}
+.chain b{color:var(--chalk);font-weight:400}
+@media (prefers-reduced-motion:no-preference){
+  .plate.fresh .inner{animation:settle .38s ease-out}
+  @keyframes settle{from{opacity:.15;transform:translateY(-3px)}to{opacity:1;transform:none}}
+}
+
+/* ---------- ledger ---------- */
+aside.ledger{position:sticky;top:12px;max-height:calc(100vh - 24px);display:flex;flex-direction:column}
+.ledger .head{display:flex;align-items:baseline;gap:8px;border-bottom:1px solid var(--rule);padding-bottom:6px;margin-bottom:8px}
+.ledger .head h2{font-size:19px;margin:0}
+.ledger .head .count{font-family:'Space Mono',monospace;font-size:11px;color:var(--dim);margin-left:auto}
+.ledger .scroll{overflow-y:auto;flex:1;padding-right:4px}
+.entry{border-bottom:1px dotted var(--rule);padding:8px 0;font-size:14.5px}
+.entry .t{font-family:'Space Mono',monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+.entry .h{font-family:'IM Fell English SC',Georgia,serif;font-size:16px}
+.entry .h.danger{color:var(--rust)}
+.entry .h.discovery{color:var(--moss)}
+.entry .d{color:var(--chalk);opacity:.85}
+.ledger .actions{display:flex;gap:6px;padding-top:8px;border-top:1px solid var(--rule);margin-top:6px}
+.ledger .actions button{flex:1;font-size:10.5px;padding:6px 4px}
+
+/* ---------- misc ---------- */
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.tag{font-family:'Space Mono',monospace;font-size:11px;border:1px solid var(--rule);padding:3px 7px;color:var(--dim)}
+.outcomes{display:grid;gap:8px;margin-top:8px}
+.oc{border-left:2px solid var(--rule);padding:2px 0 2px 10px}
+.oc .k{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--brass)}
+.oc.mixed .k{color:var(--chalk)}
+.oc.bad .k{color:var(--rust)}
+.countdown{display:flex;gap:5px;align-items:center;flex-wrap:wrap}
+.box{width:15px;height:15px;border:1px solid var(--rule);cursor:pointer;display:inline-block}
+.box.marked{background:var(--brass);border-color:var(--brass)}
+.theme-line{display:flex;gap:10px;align-items:center;padding:5px 0;flex-wrap:wrap}
+.theme-line .nm{font-family:'IM Fell English SC',Georgia,serif;font-size:17px;min-width:170px}
+.hr{border:0;border-top:1px solid var(--rule);margin:14px 0}
+footer.colophon{border-top:1px solid var(--rule);margin-top:30px;padding-top:14px;font-size:13px;color:var(--dim)}
+footer.colophon a{color:var(--moss)}
+.ledger-toggle{display:none}
+
+@media (max-width:1120px){
+  .cols{grid-template-columns:200px minmax(0,1fr)}
+  aside.ledger{grid-column:1/-1;position:static;max-height:none}
+}
+@media (max-width:760px){
+  body{font-size:16px}
+  .cols{grid-template-columns:1fr}
+  nav.index{position:static;border-bottom:1px solid var(--rule);padding-bottom:8px}
+  nav.index .eyebrow{display:none}
+  nav.index .list{display:flex;gap:14px;overflow-x:auto;padding-bottom:4px}
+  nav.index button{width:auto;padding:4px 0;font-size:17px;white-space:nowrap}
+  nav.index button .leader{display:none}
+  .masthead .credit{margin-left:0;width:100%}
+  .plate .headline{font-size:24px}
+  .ledger .scroll{max-height:340px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="masthead">
+  <h1>Ask the Fates</h1>
+  <span class="sub">a companion for overland play in the Perilous Wilds</span>
+  <span class="credit">Tables from <em>The Perilous Wilds</em> by Jason Lutes &amp; Jeremy Strandberg, used under <a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank" rel="noopener">CC BY-SA 3.0</a>.</span>
+</header>
+<div class="cols">
+  <nav class="index" aria-label="Sections">
+    <div class="eyebrow">Contents</div>
+    <div class="list" id="nav"></div>
+  </nav>
+  <main id="main">
+    <div class="plate" id="plate"><div class="inner">
+      <div class="kicker" id="plate-kicker">The dodecahedra of destiny</div>
+      <div class="headline" id="plate-head">Roll something.</div>
+      <div class="body" id="plate-body"><p class="empty">Every result shows the dice that made it, so you can overrule any step you don't like. Nothing here is saved — copy the ledger before you close the tab.</p></div>
+      <div class="chain" id="plate-chain"></div>
+    </div></div>
+    <div id="decks"></div>
+  </main>
+  <aside class="ledger">
+    <div class="head"><h2>Ledger</h2><span class="count" id="log-count">0 rolls</span></div>
+    <div class="scroll" id="log"><p class="empty" style="color:var(--dim);font-style:italic;font-size:14px">Results land here in order. Copy or download before you close the tab.</p></div>
+    <div class="actions">
+      <button class="roll" id="log-copy">Copy all</button>
+      <button class="roll" id="log-dl">Download</button>
+      <button class="roll" id="log-clear">Clear</button>
+    </div>
+  </aside>
+</div>
+<footer class="colophon">
+  <strong>Ask the Fates</strong> is an unofficial helper for <em>The Perilous Wilds</em> (Lampblack &amp; Brimstone, 2015), written by Jason Lutes with Jeremy Strandberg, illustrated by Keny Widjaja. Its text is released under CC BY-SA 3.0; the tables reproduced here are used under that licence, and this page is offered under the same terms. Travel and camp procedures have been rewritten as system-neutral outcome prompts, so they work with whatever rules you're running. Buy the book — it's worth having at the table.
+</footer>
+</div>
+<script>
+/* ===================== dice + table helpers ===================== */
+function die(n){return Math.floor(Math.random()*n)+1;}
+function dice(n,s){let t=0;for(let i=0;i<n;i++)t+=die(s);return t;}
+function T12(arr){return arr.map((v,i)=>[i+1,v]);}          // twelve faces, one each
+function R(rows){return rows;}                               // [[hi,value],...]
+function look(rows,r){for(const [hi,v] of rows){if(r<=hi)return v;}return rows[rows.length-1][1];}
+function any(arr){return arr[Math.floor(Math.random()*arr.length)];}
+
+/* A roll context collects the die chain shown under every result. */
+function ctx(){return {chain:[],depth:0};}
+function step(c,label,sides,mod,rows){
+  const top=rows[rows.length-1][0];
+  const raw=die(sides); const r=Math.max(1,Math.min(top,raw+(mod||0)));
+  const v=look(rows,r);
+  c.chain.push({label:label,sides:sides,raw:raw,mod:mod||0,shown:r,result:(typeof v==='string'?v:(v&&v.label)||'')});
+  return v;
+}
+function note(c,label,text){c.chain.push({label:label,text:text});return text;}
+
+/* ===================== DETAILS (pp. 50-51) ===================== */
+const DET={
+ 'Ability':R([[1,'bless / curse'],[2,'entangle / trap / snare'],[3,'poison / disease'],[4,'paralyze / petrify'],[5,'mimic / camouflage'],[6,'seduce / hypnotize'],[7,'dissolve / disintegrate'],[8,'@Magic Type'],[9,'drain life / magic'],[10,'immunity: @Element'],[11,'read / control minds'],[12,'@@twice']]),
+ 'Activity':T12(['laying trap / ambush','fighting / at war','prowling / on patrol','hunting / foraging','eating / resting','crafting / praying','traveling / relocating','exploring / lost','returning home','building / excavating','sleeping','dying']),
+ 'Adjective':T12(['slick / slimy','rough / hard / sharp','smooth / soft / dull','corroded / rusty','rotten / decaying','broken / brittle','stinking / smelly','weak / thin / drained','strong / fat / full','pale / poor / shallow','dark / rich / deep','colorful']),
+ 'Age':R([[1,'being born / built'],[4,'young / recent'],[7,'middle-aged'],[9,'old'],[11,'ancient'],[12,'pre-historic']]),
+ 'Alignment':R([[2,'Chaotic'],[4,'Evil'],[8,'Neutral'],[10,'Good'],[12,'Lawful']]),
+ 'Aspect':R([[1,'power / strength'],[2,'trickery / dexterity'],[3,'time / constitution'],[4,'knowledge / intelligence'],[5,'nature / wisdom'],[6,'culture / charisma'],[7,'war / lies / discord'],[8,'peace / truth / balance'],[9,'hate / envy'],[10,'love / admiration'],[11,'@Element'],[12,'@@twice']]),
+ 'Condition':R([[1,'being built / born'],[4,'intact / healthy / stable'],[7,'occupied / active / alert'],[9,'worn / tired / weak'],[10,'vacant / lost'],[11,'ruined / defiled / dying'],[12,'disappeared / dead']]),
+ 'Disposition':R([[1,'attacking'],[4,'hostile / aggressive'],[6,'cautious / doubtful'],[7,'fearful / fleeing'],[10,'neutral'],[11,'curious / hopeful'],[12,'friendly']]),
+ 'Element':R([[2,'air'],[4,'earth'],[6,'fire'],[8,'water'],[10,'life'],[12,'death']]),
+ 'Feature':R([[1,'heavily armored'],[3,'winged / flying'],[4,'multiple heads / headless'],[5,'many eyes / one eye'],[6,'many limbs / tails'],[7,'tentacles / tendrils'],[8,'@Aspect'],[9,'@Element'],[10,'@Magic Type'],[11,'@Oddity'],[12,'@@twice']]),
+ 'Magic Type':R([[2,'divination'],[4,'enchantment'],[6,'evocation'],[8,'illusion'],[10,'necromancy'],[12,'summoning']]),
+ 'No. Appearing':R([[4,'Solitary (1)'],[9,'Group (1d6+2)'],[12,'Horde (4d6 per wave)']]),
+ 'Oddity':R([[1,'weird color / smell / sound'],[2,'geometric'],[3,'web / network / system'],[4,'crystalline / glass-like'],[5,'fungal'],[6,'gaseous / smokey'],[7,'mirage / illusion'],[8,'volcanic / explosive'],[9,'magnetic / repellant'],[10,'devoid of life'],[11,'unexpectedly alive'],[12,'@@twice']]),
+ 'Orientation':R([[2,'down / earthward'],[3,'north'],[4,'northeast'],[5,'east'],[6,'southeast'],[7,'south'],[8,'southwest'],[9,'west'],[10,'northwest'],[12,'up / skyward']]),
+ 'Ruination':R([[1,'arcane disaster'],[2,'damnation / curse'],[4,'earthquake / fire / flood'],[6,'plague / famine / drought'],[8,'overrun by monsters'],[10,'war / invasion'],[11,'depleted resources'],[12,'better prospects elsewhere']]),
+ 'Size':R([[1,'Tiny'],[3,'Small'],[9,'medium-sized'],[11,'Large'],[12,'Huge']]),
+ 'Tag':R([[1,'Amorphous'],[2,'Cautious'],[3,'Construct'],[4,'Devious'],[5,'Intelligent'],[6,'Magical'],[8,'Organized'],[9,'Planar'],[10,'Stealthy'],[11,'Terrifying'],[12,'@@twice']]),
+ 'Terrain':R([[1,'wasteland / desert'],[3,'flatland / plain'],[4,'wetland / marsh / swamp'],[7,'woodland / forest / jungle'],[9,'highland / hills'],[11,'mountains'],[12,'@Oddity']]),
+ 'Visibility':R([[2,'buried / camouflaged / nigh invisible'],[6,'partly covered / overgrown / hidden'],[9,'obvious / in plain sight'],[11,'visible at near distance'],[12,'visible at great distance / focal point']])
+};
+/* resolve one detail, following cross-references and "roll twice" */
+const DETKEYS=Object.keys(DET).sort(function(a,b){return b.length-a.length;});
+function resolveRefs(c,text,depth){
+  const t=text.trim();
+  if(t.charAt(0)==='@'&&DET[t.slice(1)])return t.slice(1)+': '+detail(c,t.slice(1),depth);
+  let out=text;
+  DETKEYS.forEach(function(k){
+    const tok='@'+k;
+    let guard=0;
+    while(out.indexOf(tok)>-1&&guard++<4)out=out.replace(tok,detail(c,k,depth));
+  });
+  return out.replace(/@/g,'');
+}
+function concrete(c,name,depth){
+  let v,guard=0;
+  do{v=step(c,name,12,0,DET[name]);guard++;}while(v==='@@twice'&&guard<6);
+  if(v==='@@twice')v='the fates repeat themselves — pick one';
+  if(v.indexOf('@')>-1)v=resolveRefs(c,v,depth+1);
+  return v;
+}
+function detail(c,name,depth){
+  depth=depth||0;
+  if(!DET[name])return name;
+  const v=step(c,name,12,0,DET[name]);
+  if(v==='@@twice'){
+    if(depth>=2)return concrete(c,name,depth+1);
+    return concrete(c,name,depth+1)+' + '+concrete(c,name,depth+1);
+  }
+  if(v.indexOf('@')>-1)return depth>=3?v.replace(/@/g,''):resolveRefs(c,v,depth+1);
+  return v;
+}
+function details(c,names){return names.map(function(n){return {k:n,v:detail(c,n)};});}
+
+/* ===================== CREATURE (p. 49) ===================== */
+const BEAST={
+ ground:T12(['termite / tick / louse','snail / slug / worm','ant / centipede / scorpion','snake / lizard','vole / rat / weasel','boar / pig','dog / fox / wolf','cat / lion / panther','deer / horse / camel','ox / rhino','bear / ape / gorilla','mammoth / dinosaur']),
+ air:T12(['mosquito / firefly','locust / dragonfly / moth','bee / wasp','chicken / duck / goose','songbird / parrot','gull / waterbird','heron / crane / stork','crow / raven','hawk / falcon','eagle / owl','condor','pteranodon']),
+ water:T12(['insect','jelly / anemone','clam / oyster / snail','eel / snake','frog / toad','fish','crab / lobster','turtle','alligator / crocodile','dolphin / shark','squid / octopus','whale'])
+};
+function rollBeast(c){
+  const kind=step(c,'Beast',12,0,R([[7,'Earthbound'],[10,'Airborne'],[12,'Water-Going']]));
+  const key=kind==='Earthbound'?'ground':(kind==='Airborne'?'air':'water');
+  return step(c,kind,12,0,BEAST[key]);
+}
+const HUMANOID={
+ common:R([[3,'halfling (Small)'],[5,'goblin / kobold (Small)'],[7,'dwarf / gnome (Small)'],[9,'orc / hobgoblin / gnoll'],[11,'half-elf / half-orc, etc.'],[12,'elf']]),
+ uncommon:R([[1,'fey (Tiny)'],[3,'catfolk / dogfolk'],[6,'lizardfolk / merfolk'],[7,'birdfolk'],[10,'ogre / troll (Large)'],[12,'cyclops / giant (Large)']]),
+ hybrid:R([[2,'centaur'],[5,'werewolf / werebear'],[6,'werecreature (human + #beast)'],[10,'human + #beast'],[12,'human + #beast + #beast']])
+};
+function rollHumanoid(c){
+  const kind=step(c,'Humanoid',12,0,R([[7,'Common'],[10,'Uncommon'],[12,'Hybrid']]));
+  const key=kind.toLowerCase();
+  let v=step(c,kind,12,0,HUMANOID[key]);
+  while(v.indexOf('#beast')>-1){v=v.replace('#beast',rollBeast(c));}
+  return v;
+}
+const MONSTER={
+ unusual:R([[3,'plant / fungus'],[5,'undead human'],[6,'undead #humanoid'],[8,'#beast crossed with #beast'],[10,'#beast with the ability to #ability'],[12,'#beast with #feature']]),
+ rare:R([[3,'slime / ooze (Amorphous)'],[6,'creation (Construct)'],[9,'#beast touched by #oddity'],[12,'#entity']]),
+ legendary:R([[3,'dragon / colossus (Huge)'],[6,'#unusual, but Huge'],[9,'#rare, but Huge'],[10,'#beast crossed with a dragon'],[11,'#unusual crossed with a dragon'],[12,'#rare crossed with a dragon']])
+};
+function expand(c,v,depth){
+  depth=depth||0; if(depth>3)return v;
+  let out=v,guard=0;
+  while(/#(beast|humanoid|ability|feature|oddity|entity|unusual|rare)/.test(out)&&guard++<6){
+    out=out.replace(/#(beast|humanoid|ability|feature|oddity|entity|unusual|rare)/,function(_,k){
+      if(k==='beast')return rollBeast(c);
+      if(k==='humanoid')return rollHumanoid(c);
+      if(k==='ability')return detail(c,'Ability');
+      if(k==='feature')return detail(c,'Feature');
+      if(k==='oddity')return detail(c,'Oddity');
+      if(k==='entity')return rollEntity(c).text;
+      if(k==='unusual')return expand(c,step(c,'Unusual',12,0,MONSTER.unusual),depth+1);
+      if(k==='rare')return expand(c,step(c,'Rare',12,0,MONSTER.rare),depth+1);
+      return k;
+    });
+  }
+  return out;
+}
+function rollMonster(c){
+  const kind=step(c,'Monster',12,0,R([[7,'Unusual'],[10,'Rare'],[12,'Legendary']]));
+  const key=kind.toLowerCase();
+  return expand(c,step(c,kind,12,0,MONSTER[key]));
+}
+function rollCreature(c,forcedType){
+  const type=forcedType||step(c,'Creature',12,0,R([[4,'Beast'],[6,'Human'],[8,'Humanoid'],[12,'Monster']]));
+  let text='',extra=[];
+  if(type==='Beast'){text=rollBeast(c);extra=['Activity','Disposition','No. Appearing','Size'];}
+  else if(type==='Human'){text='human — '+npcOccupation(c);extra=['Activity','Alignment','Disposition','No. Appearing'];}
+  else if(type==='Humanoid'){text=rollHumanoid(c);extra=['Activity','Alignment','Disposition','No. Appearing'];}
+  else {text=rollMonster(c);extra=['Activity','Alignment','Disposition','No. Appearing','Size'];}
+  return {type:type,text:text,extra:extra};
+}
+
+/* ===================== UNNATURAL ENTITY (p. 48) ===================== */
+function rollEntity(c){
+  const kind=step(c,'Unnatural Entity',12,0,R([[8,'Undead'],[11,'Planar'],[12,'Divine']]));
+  let rows,extra;
+  if(kind==='Undead'){rows=R([[4,'haunt / wisp'],[8,'ghost / spectre'],[9,'banshee'],[11,'wraith / wight'],[12,'spirit lord / master']]);extra=['Ability','Activity','Alignment','Disposition'];}
+  else if(kind==='Planar'){rows=R([[3,'imp (Small)'],[6,'lesser elemental'],[9,'lesser demon / horror'],[10,'greater elemental'],[11,'greater demon / horror'],[12,'devil / elemental lord']]);extra=['Ability','Activity','Alignment','Disposition','Element','Feature','Tag'];}
+  else {rows=R([[5,'agent'],[9,'champion'],[11,'army (Horde)'],[12,'avatar']]);extra=['Ability','Activity','Alignment','Aspect','Disposition','Element','Feature','Tag'];}
+  return {text:kind+' — '+step(c,kind,12,0,rows),extra:extra};
+}
+/* helper: swap @Detail references inside a table result */
+function xdet(c,text){
+  if(text.indexOf('@')<0)return text;
+  return resolveRefs(c,text,0);
+}
+function detailMod(c,name,sides,mod){
+  const rows=DET[name];const raw=die(sides);const r=Math.max(1,Math.min(12,raw+mod));
+  const v=look(rows,r);
+  c.chain.push({label:name,sides:sides,raw:raw,mod:mod,shown:r,result:v});
+  return xdet(c,v==='@@twice'?concrete(c,name,1):v);
+}
+/* creature responsible: 1d4+4 = human or humanoid */
+function culprit(c){
+  const t=step(c,'Who made it',4,4,R([[4,'Beast'],[6,'Human'],[8,'Humanoid'],[12,'Monster']]));
+  const cr=rollCreature(c,t);
+  return cr.text;
+}
+
+/* ===================== DISCOVERY (pp. 44-45) ===================== */
+function rollDiscovery(c){
+  const cat=step(c,'Discovery',12,0,R([[1,'Unnatural Feature'],[4,'Natural Feature'],[6,'Evidence'],[8,'Creature'],[12,'Structure']]));
+  let sub='',res='',extra=[],lines=[],prompt='';
+  if(cat==='Unnatural Feature'){
+    sub=step(c,'Unnatural Feature',12,0,R([[9,'Arcane'],[11,'Planar'],[12,'Divine']]));
+    if(sub==='Arcane'){res=step(c,sub,12,0,R([[2,'residue'],[5,'blight'],[7,'alteration / mutation'],[10,'enchantment'],[12,'source / repository']]));extra=['Alignment','Magic Type'];}
+    else if(sub==='Planar'){res=step(c,sub,12,0,R([[4,'distortion / warp'],[8,'portal / gate'],[10,'rift / tear'],[12,'outpost']]));extra=['Alignment','Element'];}
+    else{res=step(c,sub,12,0,R([[3,'mark / sign'],[6,'cursed place'],[9,'hallowed place'],[11,'watched place'],[12,'presence']]));extra=['Alignment','Aspect'];}
+    prompt='How does it affect its surroundings?';
+  }
+  else if(cat==='Natural Feature'){
+    sub=step(c,'Natural Feature',12,0,R([[2,'Lair'],[4,'Obstacle'],[7,'Terrain Change'],[9,'Water Feature'],[11,'Landmark'],[12,'Resource']]));
+    if(sub==='Lair'){res=step(c,sub,12,0,R([[3,'burrow'],[7,'cave / tunnels'],[9,'nest / aerie'],[10,'hive'],[12,'ruins — treat as a Structure']]));extra=['Visibility'];lines.push({k:'Whose lair',v:culprit(c)});}
+    else if(sub==='Obstacle'){res=xdet(c,step(c,sub,12,0,R([[5,'difficult ground, suited to the terrain'],[8,'cliff / crevasse / chasm'],[10,'ravine / gorge'],[12,'@Oddity']])));}
+    else if(sub==='Terrain Change'){res=xdet(c,step(c,sub,12,0,R([[4,'a pocket of other terrain: @Terrain'],[6,'crevice / hole / pit / cave'],[8,'altitude change'],[10,'canyon / valley'],[12,'rise or peak in the distance']])));}
+    else if(sub==='Water Feature'){res=step(c,sub,12,0,R([[1,'spring / hot spring'],[2,'waterfall / geyser'],[6,'creek / stream / brook'],[8,'pond / lake'],[10,'river'],[12,'sea / ocean']]));}
+    else if(sub==='Landmark'){res=xdet(c,step(c,sub,12,0,R([[3,'water-based (waterfall, geyser, etc.)'],[6,'plant-based (ancient tree, giant flowers, etc.)'],[10,'earth-based (peak, formation, crater, etc.)'],[12,'@Oddity']])));}
+    else{res=step(c,sub,12,0,R([[4,'game / fruit / vegetable'],[6,'herb / spice / dye source'],[9,'timber / stone'],[11,'ore (copper, iron, etc.)'],[12,'precious metal / gems']]));extra=['Size','Visibility'];}
+    prompt='Describe how they notice it, and what sets it apart.';
+  }
+  else if(cat==='Evidence'){
+    sub=step(c,'Evidence',12,0,R([[6,'Tracks / Spoor'],[10,'Remains / Debris'],[12,'Stash / Cache']]));
+    if(sub==='Tracks / Spoor'){res=step(c,sub,12,0,R([[3,'faint / unclear'],[6,'definite / clear'],[8,'multiple sets'],[10,'signs of violence'],[12,'a trail of blood or worse']]));extra=['Age'];lines.push({k:'Left by',v:culprit(c)});}
+    else if(sub==='Remains / Debris'){res=step(c,sub,12,0,R([[4,'bones'],[7,'corpse / carcass'],[9,'site of violence'],[10,'junk / refuse'],[11,'lost supplies / cargo'],[12,'tools / weapons / armor']]));extra=['Age','Visibility'];}
+    else{res=step(c,sub,12,0,R([[3,'trinkets / coins'],[5,'tools / weapons / armor'],[7,'a map'],[9,'food / supplies'],[12,'treasure']]));
+         if(res==='treasure'){const t=rollTreasure(c,{unguarded:true});lines.push({k:'Treasure',v:t.text});}}
+    prompt='Consider the implications — and be ready for them to take the bait.';
+  }
+  else if(cat==='Creature'){
+    const cr=rollCreature(c);sub=cr.type;res=cr.text;extra=cr.extra;
+    prompt='Not an immediate threat — but it could become one.';
+  }
+  else{
+    const s=rollStructure(c,0);sub=s.sub;res=s.res;extra=s.extra;lines=lines.concat(s.lines);
+    prompt='Who built it? Is it connected to anything else they made nearby?';
+  }
+  return {kind:'discovery',cat:cat,sub:sub,res:res,extra:extra,lines:lines,prompt:prompt};
+}
+function rollStructure(c,mod){
+  const sub=step(c,'Structure',12,0,R([[1,'Enigmatic'],[3,'Infrastructure'],[4,'Dwelling'],[6,'Burial / Religious'],[8,'Steading'],[12,'Ruin']]));
+  return structureBranch(c,sub,0);
+}
+function structureBranch(c,sub,mod){
+  let res='',extra=[],lines=[];
+  if(sub==='Enigmatic'){res=xdet(c,step(c,sub,12,mod,R([[4,'earthworks'],[8,'megalith'],[11,'statue / idol / totem'],[12,'@Oddity']])));
+    lines.push({k:'Age',v:detailMod(c,'Age',8,4)});lines.push({k:'Size',v:detailMod(c,'Size',8,4)});extra=['Visibility'];}
+  else if(sub==='Infrastructure'){res=step(c,sub,12,mod,R([[4,'track / path'],[8,'road'],[10,'bridge / ford'],[11,'mine / quarry'],[12,'aqueduct / canal / portal']]));lines.push({k:'Built by',v:culprit(c)});}
+  else if(sub==='Dwelling'){res=step(c,sub,12,mod,R([[3,'campsite'],[6,'hovel / hut'],[8,'farm'],[10,'inn / roadhouse'],[12,'tower / keep / estate']]));lines.push({k:'Built by',v:culprit(c)});}
+  else if(sub==='Burial / Religious'){res=step(c,sub,12,mod,R([[2,'grave marker / barrow'],[4,'graveyard / necropolis'],[6,'tomb / crypt'],[9,'shrine'],[11,'temple / retreat'],[12,'great temple']]));lines.push({k:'Built by',v:culprit(c)});extra=['Alignment','Aspect'];}
+  else if(sub==='Steading'){const st=rollSteading(c);res=st.type+' — '+st.name;lines=lines.concat(st.lines);}
+  else{ /* Ruin */
+    const what=step(c,'Ruin',12,0,R([[2,'Infrastructure'],[4,'Dwelling'],[6,'Burial / Religious'],[8,'Steading'],[12,'Dungeon']]));
+    if(what==='Dungeon'){const d=rollDungeon(c);res='a ruined dungeon: '+d.foundation;lines=lines.concat(d.lines);}
+    else{const modmap={'Infrastructure':6,'Dwelling':4,'Burial / Religious':4,'Steading':2};
+      const b=structureBranch(c,what,modmap[what]||0);res='ruined '+what.toLowerCase()+' — '+b.res;lines=lines.concat(b.lines);}
+    lines.push({k:'Age',v:detailMod(c,'Age',8,4)});
+    lines.push({k:'Ruination',v:detail(c,'Ruination')});
+    extra=['Visibility'];
+  }
+  return {sub:sub,res:res,extra:extra,lines:lines};
+}
+
+/* ===================== DANGER (p. 48) ===================== */
+function rollDanger(c){
+  const cat=step(c,'Danger',12,0,R([[1,'Unnatural Entity'],[6,'Hazard'],[12,'Creature']]));
+  let sub='',res='',extra=[],lines=[],prompt='';
+  if(cat==='Unnatural Entity'){const e=rollEntity(c);sub=e.text.split(' — ')[0];res=e.text.split(' — ')[1]||e.text;extra=e.extra;
+    prompt='Describe it — creepy, twisted, awe-inspiring.';}
+  else if(cat==='Hazard'){
+    sub=step(c,'Hazard',12,0,R([[2,'Unnatural'],[10,'Natural'],[12,'Trap']]));
+    if(sub==='Unnatural'){res=step(c,sub,12,0,R([[3,'taint / blight / curse'],[8,'arcane trap or effect'],[11,'planar trap or effect'],[12,'divine']]));extra=['Aspect','Visibility'];}
+    else if(sub==='Natural'){res=xdet(c,step(c,sub,12,0,R([[2,'blinding mist / fog'],[4,'bog / mire / quicksand'],[7,'pitfall / sinkhole / chasm'],[9,'poison / disease'],[11,'flood / fire / tornado'],[12,'@Oddity']])));}
+    else{res=step(c,sub,12,0,R([[2,'alarm'],[5,'ensnaring / paralyzing'],[8,'injurious (pit, etc.)'],[9,'gas / fire / poison'],[12,'ambush']]));extra=['Aspect','Visibility'];lines.push({k:'Set by',v:culprit(c)});}
+    prompt='Threaten them — or their stuff.';
+  }
+  else{const cr=rollCreature(c);sub=cr.type;res=cr.text;extra=cr.extra;prompt='Give every monster life. What does it want?';}
+  return {kind:'danger',cat:cat,sub:sub,res:res,extra:extra,lines:lines,prompt:prompt};
+}
+/* ===================== STEADING (pp. 46-47) ===================== */
+const STEADINGS={
+ 'Village':{base:'Poor, Steady, Militia, Resource (your choice), Oath (a steading of your choice)',
+  boon:R([[3,'Natural defenses: Safe, −Defenses'],[6,'Abundant resources: +Prosperity, Resource, Enmity'],[8,'Protected by another steading: Oath (that steading), +Defenses'],[10,'On a major road: Trade, +Prosperity'],[11,"Built around a wizard's tower: Personage (the wizard), Blight (arcane creatures)"],[12,'Built on a site of religious significance: Divine, History']]),
+  woe:R([[2,'Surrounded by arid or uncultivable land: Need (food)'],[4,'Dedicated to a deity: Religious (that deity), Enmity (steading of the opposing deity)'],[6,'Recently at war: −Population; −Prosperity if they fought to the end; −Defenses if they lost'],[8,'Monster problem: Blight (that monster), Need (adventurers)'],[10,'Absorbed another village: +Population, Lawless'],[12,'Remote or unwelcoming: −Prosperity, Dwarven or Elven or other non-human']])},
+ 'Town':{base:'Moderate, Steady, Watch, Trade (with two places of your choice)',
+  boon:R([[1,'Booming: Booming, Lawless'],[3,'At a crossroads: Market, +Prosperity'],[5,'Defended by another steading: Oath (that steading), +Defenses'],[7,'Built around a church: Power (divine)'],[10,'Built around a craft: Craft (your choice), Resource (something that craft requires)'],[12,'Built around a military post: +Defenses']]),
+  woe:R([[2,'Outgrowing a vital resource: Need (that resource), Trade (a steading that has it)'],[4,'Offers defense to others: Oath, −Defenses'],[6,'An outlaw is rumored to live there: Personage (the outlaw), Enmity (the steading preyed upon)'],[8,'Controls a good or service: Exotic (that good), Enmity (a steading with ambition)'],[10,'Suffers from disease: −Population'],[12,'Popular meeting place: +Population, Lawless']])},
+ 'Keep':{base:'Poor, Shrinking, Guard, Need (supplies), Trade (someplace with supplies), Oath',
+  boon:R([[2,'Belongs to a noble family: +Prosperity, Power (political)'],[4,'Run by a skilled commander: Personage (the commander), +Defenses'],[6,'Stands watch over a trade road: +Prosperity, Guild (trade)'],[8,'Used to train special troops: Arcane, −Population'],[10,'Surrounded by fertile land: remove Need (supplies)'],[12,'Stands on a border: +Defenses, Enmity (the steading across it)']]),
+  woe:R([[3,'Built on a naturally defensible position: Safe, −Population'],[4,'Formerly occupied by another power: Enmity (steadings of that power)'],[5,'Safe haven for brigands: Lawless'],[6,'Built to defend against one specific threat: Blight (that threat)'],[7,'Has seen horrible bloody war: History (battle), Blight (restless spirits)'],[8,'Is given the worst of the worst: Need (skilled recruits)'],[10,'Suffers from disease: −Population'],[12,'Popular meeting place: +Population, −Law']])},
+ 'City':{base:'Moderate, Steady, Guard, Market, Guild (your choice), two or more Oaths',
+  boon:R([[3,'Permanent defenses such as walls: +Defenses, Oath'],[6,'Ruled by a single individual: Personage (the ruler), Power (political)'],[7,'Diverse: Dwarven or Elven or both'],[10,'Trade hub: Trade (every nearby steading), +Prosperity'],[11,'Ancient, built on top of its own ruins: History, Divine'],[12,'Center of learning: Arcane, Craft (your choice), Power (arcane)']]),
+  woe:R([[3,'Outgrown its resources: +Population, Need (food)'],[6,'Designs on nearby territory: Enmity (nearby steadings), +Defenses'],[8,'Ruled by a theocracy: −Defenses, Power (divine)'],[10,'Ruled by the people: −Defenses, +Population'],[11,'Supernatural defenses: +Defenses, Blight (related supernatural creatures)'],[12,'Occupies a place of power: Arcane, Personage (whoever watches it), Blight (arcane creatures)']])}
+};
+function rollSteading(c,forcedType){
+  const type=forcedType||step(c,'Steading',12,0,R([[5,'Village'],[8,'Town'],[11,'Keep'],[12,'City']]));
+  const s=STEADINGS[type];
+  const lines=[];
+  lines.push({k:'Tags',v:s.base});
+  lines.push({k:'Going for it',v:step(c,type+' boon',12,0,s.boon)});
+  lines.push({k:'Problem',v:step(c,type+' problem',12,0,s.woe)});
+  lines.push({k:'Founded by',v:culprit(c)});
+  return {type:type,name:placeName(c),lines:lines};
+}
+
+/* ===================== NPCs (pp. 52-53) ===================== */
+const OCC={
+ 'Criminal':T12(['bandit / brigand / thug','bandit / brigand / thug','thief','thief','bodyguard / tough','bodyguard / tough','burglar','burglar','dealer / fence','racketeer','lieutenant','boss']),
+ 'Commoner':T12(['housewife / husband','hunter / gatherer','hunter / gatherer','farmer / herder','farmer / herder','farmer / herder','laborer / servant','laborer / servant','driver / porter / guide','sailor / soldier / guard','clergy / monk','apprentice / adventurer']),
+ 'Tradesperson':T12(['cobbler / furrier / tailor','weaver / basketmaker','potter / carpenter','mason / baker / chandler','cooper / wheelwright','tanner / ropemaker','smith / tinker','stablekeeper / herbalist','vintner / jeweler','innkeeper / tavernkeeper','artist / actor / minstrel','armorer / weaponsmith']),
+ 'Merchant':T12(['general goods / outfitter','general goods / outfitter','general goods / outfitter','raw materials','grain / livestock','ale / wine / spirits','clothing / jewelry','weapons / armor','spices / tobacco','labor','books / scrolls','magic supplies / items']),
+ 'Specialist':T12(['undertaker','sage / scholar / wizard','writer / illuminator','perfumer','architect / engineer','locksmith / clockmaker','physician / apothecary','navigator / guide','alchemist / astrologer','spy / diplomat','cartographer','inventor']),
+ 'Official':T12(['town crier','tax collector','armiger / gentry','armiger / gentry','reeve / sheriff / constable','mayor / magistrate','priest / bishop / abbot','guildmaster','knight / templar','elder / high priest','noble (baron, etc.)','lord / lady / king / queen'])
+};
+const CONTEXT={
+ 'Wilderness':R([[2,'#Criminal-4'],[4,'adventurer / explorer'],[6,'hunter / gatherer'],[8,'#Commoner'],[10,'ranger / scout'],[11,'soldier / mercenary'],[12,'#Official']]),
+ 'Rural':R([[1,'beggar / urchin'],[2,'#Criminal-1'],[3,'adventurer / explorer'],[4,'hunter / gatherer'],[8,'#Commoner'],[9,'#Tradesperson'],[10,'#Merchant-1'],[11,'militia / soldier / guard'],[12,'#Official']]),
+ 'Urban':R([[2,'beggar / urchin'],[3,'#Criminal'],[7,'#Commoner'],[8,'#Tradesperson'],[9,'#Merchant'],[10,'#Specialist'],[11,'militia / soldier / guard'],[12,'#Official']])
+};
+function npcOccupation(c,forcedContext){
+  const where=forcedContext||step(c,'Where they come from',12,0,R([[3,'Wilderness'],[9,'Rural'],[12,'Urban']]));
+  let v=step(c,where,12,0,CONTEXT[where]);
+  if(v.charAt(0)==='#'){
+    const m=v.slice(1).split('-');const tbl=m[0];const mod=m[1]?-parseInt(m[1],10):0;
+    const raw=die(12);const r=Math.max(1,Math.min(12,raw+mod));
+    const job=look(OCC[tbl],r);
+    c.chain.push({label:tbl,sides:12,raw:raw,mod:mod,shown:r,result:job});
+    v=job+' ('+tbl.toLowerCase()+')';
+  }
+  return v;
+}
+const TRAITS={
+ 'Appearance':T12(['disfigured (missing teeth, an eye, etc.)','a lasting injury (bad leg, bad arm, etc.)','tattooed / pockmarked / scarred','unkempt / shabby / grubby','big / thick / brawny','small / scrawny / emaciated','notable hair (wild, long, none)','notable nose (big, hooked, broken)','notable eyes (blue, bloodshot, mismatched)','clean / well-dressed / well-groomed','attractive / handsome / stunning','#again']),
+ 'Personality':T12(['loner / alienated / antisocial','cruel / belligerent / a bully','anxious / fearful / cowardly','envious / covetous / greedy','aloof / haughty / arrogant','awkward / shy / self-loathing','orderly / compulsive / controlling','confident / impulsive / reckless','kind / generous / compassionate','easygoing / relaxed / peaceful','cheerful / happy / optimistic','#again']),
+ 'Quirk':T12(['insecure / suspicious of outsiders','addicted to something (sweets, drink, dice)','a phobia (spiders, fire, darkness)','allergic / asthmatic / chronically ill','skeptic / paranoid','superstitious / devout / fanatical','miser / pack-rat','spendthrift / wastrel','smart aleck / know-it-all','artistic / dreamer / delusional','naive / idealistic','#again'])};
+function npcTrait(c,forced){
+  const cat=forced||step(c,'Trait',12,0,R([[6,'Appearance'],[9,'Personality'],[12,'Quirk']]));
+  let v=step(c,cat,12,0,TRAITS[cat]);
+  if(v==='#again'){const b=step(c,cat+' (again)',12,0,TRAITS[cat]);v=(b==='#again'?'a walking contradiction':b)+' — despite something that flatly contradicts it (your call)';}
+  return {cat:cat,text:v};
+}
+const FOLLOWER_TAGS=['___-wise','Archer','Athletic','Beautiful','Cautious','Connected (___)','Cunning','Devious','Group','Guide (___)','Hardy','Healer','Meek','Magical','Organized','Self-sufficient','Stealthy','Warrior'];
+function rollFollower(c){
+  const q=step(c,'Competence',12,0,R([[3,'A liability: Quality −1, no tags'],[9,'Competent: Quality +0, 1 tag'],[11,'Fully capable: Quality +1, 2 tags'],[12,'Exceptional: Quality +2, 4 tags']]));
+  const bg=step(c,'Background',12,0,R([[2,'A life of servitude and oppression: +Meek'],[3,'Past their prime: −1 Quality, +1 Wise'],[5,'A life of danger: +2 tags'],[9,'Unremarkable'],[10,'A life of privilege: +1 tag'],[11,'Specialist: +1 Quality, −2 tags'],[12,'Two backgrounds — roll again']]));
+  const loy=step(c,'Loyalty',12,0,R([[2,'0 — little faith in your cause'],[10,'+1'],[12,'+2 — great faith in your cause']]));
+  const inst=step(c,'Instinct',12,0,R([[1,'Loot, pillage, and burn'],[2,'Hold a grudge and seek payback'],[3,'Question leadership or authority'],[5,'Lord it over others'],[7,'Act impulsively'],[9,'Give in to temptation'],[11,'Slack off'],[12,'Avoid danger or punishment']]));
+  const cost=step(c,'Cost',12,0,R([[1,'Debauchery — food, drink, gambling, mischief'],[2,'Vengeance — payback on those who wronged them'],[5,'Lucre — coin to match their steading and skill'],[7,'Renown — public credit for their deeds'],[9,'Glory — a worthy foe, beaten in the open'],[10,'Affection — kind words, time, attention'],[11,'Knowledge — secrets and wonders of the wider world'],[12,'Good — suffering eased, innocents defended']]));
+  const hp=step(c,'Hit points & damage',12,0,R([[3,'3 HP, d4 damage'],[9,'6 HP, d6 damage'],[12,'9 HP, d8 damage']]));
+  const n=/−1/.test(q)?0:(/\+0/.test(q)?1:(/\+1/.test(q)?2:4));
+  const tags=[];const pool=FOLLOWER_TAGS.slice();
+  for(let i=0;i<Math.max(1,n);i++){tags.push(pool.splice(Math.floor(Math.random()*pool.length),1)[0]);}
+  return {lines:[{k:'Competence',v:q},{k:'Background',v:bg},{k:'Loyalty',v:loy},{k:'Instinct',v:inst},{k:'Cost',v:cost},{k:'Body',v:hp},{k:'Tag ideas',v:tags.join(', ')+' — the first tag is always ___-wise'}]};
+}
+
+/* ===================== NAMES (pp. 66-69) ===================== */
+const CULTURES={
+ 'Arpad (Hungarian roots)':{
+  m:['Agoston','Arpad','Attila','Bognar','Denes','Edmond','Erno','Etele','Ferdinand','Florian','Geza','Gyula','Hugo','Karcsi','Konrad','Lazlo','Lukas','Marko','Miklos','Peti','Robi','Tamas','Ronold','Viktor','Zoltan'],
+  f:['Abigel','Aliz','Amalia','Andrea','Aranka','Csilla','Edit','Erzebet','Gertrud','Greta','Iren','Kamilla','Lara','Lia','Lujza','Matild','Olga','Otilia','Panna','Roza','Terez','Tunda','Valeria','Vilma','Viola'],
+  s:['Aldott (Blessed)','Almahid (Applebridge)','Elesett (Fallen)','Feketz (Black Rock)','Godor (Pit)','Kelegaz (Eastford)','Kigyov (Snake Swamp)',"Kiralokas (Queen's Castle)","Kiralsir (King's Grave)",'Magziklar (Highcliff)','Mocsar (Fen)','Nagyvros (Hightown)','Okorm (Oxfield)','Orkfal (Orcwall)','Perov (Redwater)','Soterdo (Dark Wood)','Tehenvar (Cow Town)','Toron (Tower)','Torott (Ironhold)','Utolszer (Last Stand)','Valavolg (Greendale)','Vastar (Dwarf Watch)','Viz (Oxfield)','Volgyom (Valley)','Zoldom (Green Hill)'],
+  mt:['Barat (Friend)','Barsony (Velvet)','Edesem (Sweetheart)','Egatz (Skyfire)','Eso (Rain)','Fakyla (Torch)','Feketsor (Black Mane)','Felho (Cloud)','Flotta (Fleet)','Gazda (Master)','Hold (Moon)','Igaslo (Dobbin)','Ijeda (Skittish)','Koszalo (Rambler)','Megmento (Savior)','Napfen (Sunshine)','Rozsa (Rose)','Szamla (Bill)','Szellem (Spirited)','Szeplok (Freckles)','Szerence (Lucky)','Tusko (Stumps)','Vad (Wild One)','Vihar (Storm)','Villam (Lightning)']},
+ 'Oloru (Yoruba roots)':{
+  m:['Adibemi','Aboye','Adegoke','Ayokunle','Babajide','Babatunde','Enitan','Femi','Kayin','Kayode','Lanre','Lekan','Mongo','Nwachukwu','Oban','Ogun','Olukayode','Oluwalanni','Oluwatoke','Onipede','Sijuade','Toben','Utiba','Zaki','Zoputan'],
+  f:['Abeni','Ade','Alaba','Bolanle','Bosade','Daraja','Fari','Gbemisola','Ife','Ige','Lewa','Mojisola','Monifa','Olufemi','Omolara','Oni','Orisa','Osa','Ronke','Shanum','Simisola','Titlayo','Yejide','Yewande','Zauna'],
+  s:['Asala Ilu (Desert Town)','Atijo Ina (Old Fire)','Bajesia (Broken Banner)','Dudu Olomi (Blackmarsh)','Ebutte Meta (Three Ports)','Ejodo (Snake River)',"Esukale (Devil's Dinner)",'Fadormi (Silver Spring)','Funfumi (Whitewater)','Gooluna (Gold Road)','Ijisofo (Storm Hollow)',"Ikukenu (Death's Door)",'Iwin Ago (Faery Watch)','Jinibi (Far Place)',"Oba Ile (King's Home)",'Oduroke (Prayer Hill)','Ogbinibi (Farming Place)','Ogunibi (Battle Place)','Okanigi (One Tree)','Okutasibo (Stone Marker)',"Olorusura (God's Treasure)","Olusajeki (Wizard's Keep)","Oluwakaji (Lord's Tomb)",'Opolokuta (Many Stones)','Opoligi (Many Trees)'],
+  mt:['Adiitu (Mystery)','Alayo (Happy)','Atale (Ginger)','Bilu (Bill)','Dudupatak (Dark Hoof)','Egun (Bramble)','Eniyan (Ember)','Esirun (Longshanks)','Fenuko (Kiss)','Funfungo (White Hair)','Gunirun (Longhair)','Imole (Bright)','Imole Uju (Bright Eye)','Ira (Rambler)','Itan (Story)','Iyebiye (Precious)','Lulu (Powder)','Nilera (Healthy)','Ogbo (Spotted)','Ogboju (Brave Heart)','Ojiji (Shadow)','Olooto (Faithful)','Orisa (Spring)','Orun (Heaven)','Sare (Flash)']},
+ 'Valkoina (Finnish roots)':{
+  m:['Aatami','Armas','Arsi','Arvi','Eetu','Hannu','Heimo','Ilkka','Jorma','Kaapo','Kain','Kauko','Lari','Manu','Nuutti','Petri','Raimo','Reima','Risto','Sakari','Sampsa','Seppo','Taito','Terho','Vilppu'],
+  f:['Aija','Aina','Ainikki','Heini','Ilona','Irja','Jaana','Kirsi','Maija','Marita','Miina','Mimmi','Minja','Mira','Naemi','Outi','Pirjo','Päivikki','Riikka','Saimi','Suoma','Suvi','Tuula','Vellamo','Virpi'],
+  s:['Etuvartio (Outpost)','Hopea Kaivos (Silver Mine)','Kalapunki (Fish Town)','Kivimurri (Stone Wall)','Maaginen (Magic)','Maki Linna (Hill Castle)','Merenranta (Seaside)','Metsästysmaat (Hunting Ground)','Mustakota (Black Hut)','Mäenrinne (Hillside)','Paja (Forge)','Pienni Paikka (Low Place)','Pyhä Paikka (Holy Place)','Rantakallio (Cliff)','Rikki (Broken)','Suo (Swamp)','Suosi (Favored)','Torni (Tower)','Turvapaikka (Refuge)','Uusipunki (New Town)','Valkoinen Kivi (Whitestone)','Valtaistuin (Throne)','Vapaanki (Free Town)','Vihreä Paikka (Green Place)','Viimeinen Koti (Last Home)'],
+  mt:['Aave (Ghost)','Enkeli (Angel)','Haiva (Shadow)','Hopea (Silver)','Ilmavirta (Current)','Kesi (Tame)','Kestaba (Durable)','Kiukuinnen (Angry)','Lansiviima (West Wind)','Luotettava (Trusty)','Myrskyisa (Stormy)','Nokka (Bill)','Noyra (Humble)','Pitkanena (Longnose)','Saikki (Skittish)','Salama (Thunderbolt)','Sankari (Hero)','Sisko (Sister)','Upea (Magnificent)','Vahva (Strong)','Valkoinen (White)','Varmaotteinen (Surefoot)','Vesuri (Billhook)','Vinha (Fast)','Ystava (Friend)']},
+ 'Tamanarugan (Indonesian roots)':{
+  m:['Ade','Adi','Amaziah','Ayokunle','Ary','Bambang','Bima','Budi','Darma','Dian','Eli','Gunardi','Hartono','Irwan','Lauwita','Manusama','Okan','Onesimus','Sammin','Tameem','Tanaya','Tirto','Wiryono','Yandi','Zebulun'],
+  f:['Adah','Bulan','Candrakusuma','Devi','Hanjojo','Iman','Intan','Laksmini','Lestari','Limijanto','Marah','Megawati','Melati','Nadiyya','Ophrah','Ramza','Sapphiral','Selah','Suminten','Tamar','Tanjaya','Tjokro','Tri','Wangi','Zenze'],
+  s:['Airdib (Blessed Waters)','Airjinh (Clearwater)',"Akhir Jalan (Road's End)",'Berdarah (Bloody)','Bidang Bera (Fallow Field)','Candibula (Moon Temple)','Ditingga (Forsaken)','Emasungai (Gold Creek)','Gunung (Mountain)','Kayu (Timber)','Kuil (Temple)','Ladang Hijau (Greenfield)','Lembah (Valley)','Menjau (Far Away)','Ngarai (Canyon)','Persimpangan (Crossroads)','Puncakit (Hilltop)','Sungairac (Poison River)','Teibing (Cliffside)','Tempat Aman (Safe Place)','Tempat Istir (Rest Place)','Terkutuk (Cursed)','Tersentu (Touched by God)','Wahah (Oasis)','Yangtinggi (High Tower)'],
+  mt:['Anginu (North Wind)','Api (Blaze)','Bakat (Felicity)','Bakti (Loyal)','Beruntung (Lucky)','Bilah (Blade)','Biru (Blue)','Gemetar (Quiver)','Guntur (Thunder)','Hidungi (Black Nose)','Janda (Widow)','Kakicerah (Bright Foot)','Kakiring (Light Foot)','Keriangan (Sunshine)','Kunang (Firefly)','Lapar (Hungry)','Murni (Pure)','Paruh (Bill)','Penebus (Avenger)','Penyelemat (Savior)','Prajurit (Warrior)','Rusak (Broken)','Satucep (Fast One)','Setia (True Heart)','Tahanla (Durable)']}
+};
+function personName(culture,sex){
+  const cu=CULTURES[culture]||CULTURES['Arpad (Hungarian roots)'];
+  const s=sex||(Math.random()<0.5?'m':'f');
+  return any(cu[s]);
+}
+/* ===================== REGION & PLACE NAMES (pp. 16-17) ===================== */
+let CULTURE='Arpad (Hungarian roots)';
+const REGION={
+ terrain:['Bay','Bluffs','Bog','Cliffs','Desert','Downs','Dunes','Expanse','Fells','Fen','Flats','Foothills','Forest','Groves','Heath','Heights','Hills','Hollows','Jungle','Lake','Lowland','March','Marsh','Meadows','Moor','Morass','Mounds','Mountains','Peaks','Plains','Prairie','Quagmire','Range','Reach','Sands','Savanna','Scarps','Sea','Slough','Sound','Steppe','Swamp','Sweep','Teeth','Thicket','Upland','Wall','Waste','Wasteland','Woods'],
+ adj:['Ageless','Ashen','Black','Blessed','Blighted','Blue','Broken','Burning','Cold','Cursed','Dark','Dead','Deadly','Deep','Desolate','Diamond','Dim','Dismal','Dun','Eerie','Endless','Fallen','Far','Fell','Flaming','Forgotten','Forsaken','Frozen','Glittering','Golden','Green','Grim','Holy','Impassable','Jagged','Light','Long','Misty','Perilous','Purple','Red','Savage','Shadowy','Shattered','Shifting','Shining','Silver','White','Wicked','Yellow'],
+ noun:['#name','Ash','Bone','Darkness','Dead','Death','Desolation','Despair','Devil','Doom','Dragon','Fate','Fear','Fire','Fury','Ghost','Giant','God','Gold','Heaven','Hell','Honor','Hope','Horror','King','Life','Light','Lord','Mist','Peril','Queen','Rain','Refuge','Regret','Savior','Shadow','Silver','Skull','Sky','Smoke','Snake','Sorrow','Storm','Sun','Thorn','Thunder','Traitor','Troll','Victory','Witch']
+};
+const PLACE={
+ place:['Barrier','Beach','Bowl','Camp','Cave','Circle','City','Cliff','Crater','Crossing','Crypt','Den','Ditch','Falls','Fence','Field','Fort','Gate','Grove','Hill','Hole','Hut','Keep','Lake','Marsh','Meadow','Mountain','Pit','Post','Ridge','Ring','Rise','Road','Rock','Ruin','Shrine','Spire','Spring','Stone','Tangle','Temple','Throne','Tomb','Tower','Town','Tree','Vale','Valley','Village','Wall'],
+ adj:['Ancient','Ashen','Black','Bloody','Blue','Bright','Broken','Burning','Clouded','Copper','Cracked','Dark','Dead','Doomed','Endless','Fallen','Far','Fearsome','Floating','Forbidden','Frozen','Ghostly','Gloomy','Golden','Grim','Hidden','High','Iron','Jagged','Lonely','Lost','Low','Near','Petrified','Red','Screaming','Sharp','Shattered','Shifting','Shining','Shivering','Shrouded','Silver','Stalwart','Stoney','Sunken','Thorny','Thundering','White','Withered'],
+ noun:['#name','Arm','Ash','Blood','Child','Cinder','Corpse','Crystal','Dagger','Death','Demon','Devil','Doom','Eye','Fear','Finger','Fire','Foot','Ghost','Giant','Goblin','God','Gold','Hand','Head','Heart','Hero','Hope','King','Knave','Knight','Muck','Mud','Priest','Queen','Sailor','Silver','Skull','Smoke','Souls','Spear','Spirit','Stone','Sword','Thief','Troll','Warrior','Water','Witch','Wizard']
+};
+function fill(word){return word==='#name'?personName(CULTURE):word;}
+function regionName(c){
+  const t=die(12);const T=any(REGION.terrain),A=any(REGION.adj),N=fill(any(REGION.noun));
+  let n;
+  if(t<=4)n=A+' '+T; else if(t<=6)n=T+' of the '+N; else if(t<=8)n='The '+T+' '+A;
+  else if(t<=10)n=N+' '+T; else if(t===11)n=N+"'s "+A+' '+T; else n=A+' '+T+' of the '+N;
+  if(c)c.chain.push({label:'Region name template',sides:12,raw:t,mod:0,shown:t,result:n});
+  return n;
+}
+function placeName(c){
+  const t=die(12);const P=any(PLACE.place),A=any(PLACE.adj),N=fill(any(PLACE.noun));
+  let n;
+  if(t<=2)n='The '+P; else if(t<=4)n='The '+A+' '+P; else if(t<=6)n='The '+P+' of the '+N;
+  else if(t<=8)n=N+"'s "+P; else if(t<=10)n=P+' of the '+A+' '+N; else n='The '+A+' '+N;
+  if(c)c.chain.push({label:'Place name template',sides:12,raw:t,mod:0,shown:t,result:n});
+  return n;
+}
+
+/* ===================== TREASURE (p. 43) ===================== */
+const TREASURE=R([[1,'A few coins — 2d8 or so'],[2,'A useful item'],[3,'Several coins, about 4d10'],[4,'A small valuable (gem, art), worth 2d10×10 coins, 0 weight'],[5,'Some minor magical trinket'],[6,'A useful clue — map, note, letter'],[7,'A bag of coins, 1d4×100, 1 weight per 100'],[8,'A small item (gem, art) of great value — 2d6×100 coins, 0 weight'],[9,'A chest of coins and small valuables — 1 weight, 3d6×100 coins'],[10,'A magical item or magical effect'],[11,'Many bags of coins, 2d4×100 or so'],[12,'A sign of office (crown, banner) worth at least 3d4×100 coins'],[13,'A large art item — 4d4×100 coins, 1 weight'],[14,'A unique item worth at least 5d4×100 coins'],[15,'Everything needed to learn a new spell — and roll again'],[16,'A portal or secret path, or directions to one — and roll again'],[17,'Something tied to one of the characters — and roll again'],[18,'A hoard: 1d10×1000 coins and 1d10×10 gems worth 2d6×100 each']]);
+const ITEM_UTILITY=T12(['key / lockpick','potion / food','clothing / cloak','decanter / vessel / cup','cage / box / coffer','instrument / tool','book / scroll','weapon / staff / wand','armor / shield / helm','mirror / hourglass','pet / mount','device / construct']);
+const ITEM_ART=T12(['trinket / charm','painting / pottery','ring / gloves','carpet / tapestry','statuette / idol','flag / banner','bracelet / armband','necklace / amulet','belt / harness','hat / mask','orb / sigil / rod','crown / scepter']);
+function rollItem(c){
+  const cat=step(c,'Item',12,0,R([[8,'Utility item'],[12,'Art item']]));
+  return cat+': '+step(c,cat,12,0,cat==='Utility item'?ITEM_UTILITY:ITEM_ART);
+}
+function rollTreasure(c,opts){
+  opts=opts||{};let total=0,lines=[];
+  if(opts.unguarded){
+    const a=die(6),b=die(6);
+    if(a===6&&b===6){total=a+b+die(6);c.chain.push({label:'Unguarded (double 6s → 3d6)',text:'total '+total});}
+    else{total=Math.min(a,b);c.chain.push({label:'Unguarded 2d6, take the lower',text:a+' & '+b+' → '+total});}
+  } else {
+    const d=opts.dmg||8;let r=die(d);let desc=r+' on d'+d;
+    if(opts.hoarder){const r2=die(d);desc+=' / '+r2+' (Hoarder: best of two)';r=Math.max(r,r2);}
+    total=r;
+    if(opts.lord){const x=dice(1,4);total+=x;desc+=' +'+x+' (lords over others)';}
+    if(opts.ancient){const x=dice(1,4);total+=x;desc+=' +'+x+' (ancient and noteworthy)';}
+    c.chain.push({label:"Monster's damage die",text:desc+' → '+total});
+    if(opts.magical)lines.push({k:'Magical',v:'some strange item — magical?'});
+    if(opts.divine)lines.push({k:'Divine',v:'some sign of a deity, or of several'});
+    if(opts.planar)lines.push({k:'Planar',v:'something not of this earth'});
+    if(opts.far)lines.push({k:'Far from home',v:dice(1,6)+" of the monster's own rations"});
+  }
+  let text=look(TREASURE,Math.max(1,Math.min(18,total)));
+  c.chain.push({label:'Treasure '+total,text:text});
+  let guard=0;
+  while(/roll again/.test(text)&&guard++<3){
+    const again=opts.unguarded?Math.min(die(6),die(6)):die(opts.dmg||8);
+    const more=look(TREASURE,Math.max(1,Math.min(18,again)));
+    c.chain.push({label:'And again ('+again+')',text:more});
+    lines.push({k:'Plus',v:more});text=more;
+  }
+  if(/item|valuable|trinket/i.test(text))lines.push({k:'What is it',v:rollItem(c)});
+  if(/magical/i.test(text)){lines.push({k:'Magical clue',v:'Ability — '+detail(c,'Ability')+'; '+DETNAME('Magic Type',c)});}
+  const first=look(TREASURE,Math.max(1,Math.min(18,total)));
+  return {text:first,lines:lines};
+}
+function DETNAME(n,c){return n+' — '+detail(c,n);}
+
+/* ===================== DUNGEONS (pp. 55-61) ===================== */
+const DUNG={
+ size:R([[3,{n:'small',themes:2,tdice:'1d4',areas:6,adice:'1d6+2'}],[9,{n:'medium',themes:3,tdice:'1d6',areas:12,adice:'2d6+4'}],[11,{n:'large',themes:4,tdice:'1d6+1',areas:16,adice:'3d6+6'}],[12,{n:'huge',themes:5,tdice:'1d6+2',areas:24,adice:'4d6+10'}]]),
+ builder:R([[1,'aliens / precursors'],[2,'a demigod or demon'],[4,'nobody — it is natural (caves, etc.)'],[5,'a religious order or cult'],[7,'#humanoid'],[9,'dwarves / gnomes'],[10,'elves'],[11,'a wizard or madman'],[12,'a monarch or warlord']]),
+ fn:R([[1,'source / portal'],[2,'mine'],[4,'tomb / crypt'],[5,'prison'],[7,'lair / den / hideout'],[9,'stronghold / sanctuary'],[10,'shrine / temple / oracle'],[11,'archive / library'],[12,'unknown — nobody agrees']]),
+ themeCat:R([[5,'Mundane'],[9,'Unusual'],[12,'Extraordinary']]),
+ Mundane:T12(['rot / decay','torture / agony','madness','all is lost','noble sacrifice','savage fury','survival','criminal activity','secrets / treachery','tricks and traps','invasion / infestation','factions at war']),
+ Unusual:T12(['creation / invention','@Element','knowledge / learning','growth / expansion','deepening mystery','transformation / change','chaos and destruction','shadowy forces','forbidden knowledge','poison / disease','corruption / blight','impending disaster']),
+ Extraordinary:T12(['scheming evil','divination / scrying','blasphemy','arcane research','occult forces','an ancient curse','mutation','the unquiet dead','bottomless hunger','incredible power','unspeakable horrors','holy war']),
+ dressing:T12(['junk / debris','tracks / marks','signs of battle','writing / carving','a warning','a dead #creature','bones / remains','book / scroll / map','broken door or wall','breeze / wind / smell','lichen / moss / fungus','@Oddity']),
+ feature:T12(['cave-in / collapse','pit / shaft / chasm','pillars / columns','locked door or gate','alcoves / niches','bridge / stairs / ramp','fountain / well / pool','a puzzle','altar / dais / platform','statue / idol','magic pool, statue, or idol','a connection to another dungeon']),
+ find:T12(['trinkets','tools','weapons / armor','supplies / trade goods','coins / gems / jewelry','poisons / potions','an adventurer or captive','a magic item','scroll / book','magic weapon or armor','an artifact','roll twice']),
+ trap:T12(['alarm','ensnaring / paralyzing','pit','crushing','piercing / puncturing','chopping / slashing','confusing (maze, etc.)','gas (poison, etc.)','@Element','ambush','magical','roll twice']),
+ creatureDoing:T12(['waiting in ambush','fighting / squabbling','prowling / on patrol','looking for food','eating / resting','guarding','on the move','searching / scavenging','returning to its den','making plans','sleeping','dying']),
+ entity:T12(['an alien interloper','a vermin lord','a criminal mastermind','a warlord','a high priest','an oracle','a wizard, witch, or alchemist','a monster lord','an evil spirit or ghost','an undead lord (lich, etc.)','a demon','a dark god']),
+ area:R([[1,'Common area, empty'],[2,'Common area — Danger'],[4,'Common area — Discovery + Danger'],[6,'Common area — Discovery'],[7,'Themed area — Danger'],[8,'Themed area — Discovery + Danger'],[9,'Themed area — Discovery'],[10,'Unique themed area — Danger'],[11,'Unique themed area — Discovery + Danger'],[12,'Unique themed area — Discovery']])
+};
+function rollDungeon(c){
+  const sz=step(c,'Dungeon size',12,0,DUNG.size);
+  let builder=step(c,'Builder',12,0,DUNG.builder);
+  if(builder.indexOf('#humanoid')>-1)builder=builder.replace('#humanoid',rollHumanoid(c));
+  const fn=step(c,'Function',12,0,DUNG.fn);
+  const ruin=detail(c,'Ruination');
+  const nThemes=(function(){const d=sz.tdice;const m=d.match(/(\d+)d(\d+)(?:\+(\d+))?/);let v=dice(+m[1],+m[2])+(m[3]?+m[3]:0);c.chain.push({label:'Number of themes ('+d+')',text:String(v)});return v;})();
+  const themes=[];
+  for(let i=0;i<nThemes;i++){
+    const cat=step(c,'Theme '+(i+1),12,0,DUNG.themeCat);
+    themes.push(xdet(c,step(c,cat,12,0,DUNG[cat])));
+  }
+  const foundation=(builder==='nobody — it is natural (caves, etc.)'?'a natural ':'')+fn+' — built by '+builder;
+  return {size:sz,foundation:foundation,ruin:ruin,themes:themes,countdown:sz.themes,
+    lines:[{k:'Foundation',v:foundation},{k:'Size',v:sz.n+' — up to '+sz.areas+' common and '+sz.areas+' unique areas ('+sz.adice+' if you prefer to roll)'},{k:'Themes',v:themes.join(' · ')+' — countdown of '+sz.themes+' boxes each'},{k:'How it fell',v:ruin}]};
+}
+function oneOf(c,label,rows){
+  let v,guard=0;
+  do{v=step(c,label,12,0,rows);guard++;}while(v==='roll twice'&&guard<5);
+  return xdet(c,v==='roll twice'?'something doubly strange':v);
+}
+function dungeonDiscovery(c){
+  const cat=step(c,'Dungeon Discovery',12,0,R([[3,'Dressing'],[9,'Feature'],[12,'Find']]));
+  let v=step(c,cat,12,0,DUNG[cat.toLowerCase()]);
+  if(v.indexOf('#creature')>-1)v=v.replace('#creature',rollCreature(c).text);
+  if(v==='roll twice')v=oneOf(c,'Find A',DUNG.find)+' and '+oneOf(c,'Find B',DUNG.find);
+  return {cat:cat,text:xdet(c,v)};
+}
+function dungeonDanger(c){
+  const cat=step(c,'Dungeon Danger',12,0,R([[4,'Trap'],[11,'Creature'],[12,'Entity']]));
+  if(cat==='Creature'){const cr=rollCreature(c);return {cat:cat,text:cr.text+', '+step(c,'Doing what',12,0,DUNG.creatureDoing),extra:cr.extra};}
+  if(cat==='Entity')return {cat:cat,text:step(c,cat,12,0,DUNG.entity)};
+  let v=step(c,cat,12,0,DUNG.trap);
+  if(v==='roll twice')v=oneOf(c,'Trap A',DUNG.trap)+' + '+oneOf(c,'Trap B',DUNG.trap);
+  return {cat:cat,text:xdet(c,v)};
+}
+/* ===================== TRAVEL & CAMP (rewritten system-neutral) ===================== */
+const MOVES=[
+{id:'scout',name:'Scout Ahead',when:'One of you takes point and looks for anything out of the ordinary.',
+ full:{t:'Choose two.',pick:{n:2,who:'you'}},
+ mixed:{t:'Choose one.',pick:{n:1,who:'you'}},
+ opts:['You get the drop on whatever lies ahead.','You spot something in the terrain worth having — a shortcut, shelter, or tactical advantage. Say what it is.','You make a Discovery. (Roll one.)','You notice sign of a nearby Danger. Say what it is, and what it might mean. (Roll one.)'],
+ soft:['The weather worsens.','The scout attracts unwanted attention.','The scout becomes lost.'],
+ hard:['The scout runs into a Danger.','The scout is ambushed.','The rest of the party is ambushed.','The scout is captured or trapped.','The scout is hurt.']},
+{id:'navigate',name:'Navigate',when:'You plot the best course through dangerous or unfamiliar country.',
+ full:{t:'You avoid the dangers and the distractions and make good time, reaching a point of your choosing before you need to make camp.'},
+ mixed:{t:'The fates pick one:',pick:{n:1,who:'fate'}},
+ opts:['You happen on a Discovery the scout walked past. (Roll one.)','The going is slow, or you wander off course. Say which, and where that leaves you.','You run into a Danger. Whether it surprises you depends on whether the scout got the drop on it.'],
+ soft:['The weather worsens.',"You're being followed.",'You must backtrack, losing valuable time.'],
+ hard:['Someone slips and is hurt.','You stumble straight into a Danger.','You get lost.']},
+{id:'provisions',name:'Manage Provisions',when:'Someone prepares and shares out food for the party.',
+ full:{t:'Choose one.',pick:{n:1,who:'you'}},
+ mixed:{t:'The party eats the expected amount — one ration each per day travelling, one each when making camp.'},
+ opts:['Careful management stretches the supply. Decide how many rations that saves.','You eat the expected amount, and the meal is superb. Describe it; everyone who licks their lips carries the good of it forward.'],
+ soft:['They bicker over the shares.','Local animals come sniffing after the food.','Someone is weak until they eat a second ration.'],
+ hard:['The water turns out to be tainted or poisonous.','1d4 rations are lost to spoilage or over-eating.','Someone gets food poisoning — shaky and sick.','Something nearby is drawn by the smell.']},
+{id:'camp',name:'Make Camp',when:'You settle in to rest. Someone handles provisions; then set the watch order.',
+ full:{t:'The night passes without incident.'},
+ mixed:{t:'The fates pick one:',pick:{n:1,who:'fate'}},
+ opts:['Whoever is on watch notices a nearby Discovery. (Roll one.)','One party member has a restless night.','One or more followers cause trouble.','A Danger approaches. Not hostile yet — but whoever is on watch had better stay sharp. (Roll one.)'],
+ badOverride:'A Danger manifests. Stay sharp.',
+ note:'If you ate and drank and slept a few hours uninterrupted, you recover as your rules allow. If you went without, you get nothing from the night.',
+ soft:['A restless night for someone.','Followers grumble in the dark.'],
+ hard:['A Danger walks into camp.']},
+{id:'sharp',name:'Stay Sharp',when:"You're on watch, or standing still, and something approaches.",
+ full:{t:'You notice in time to wake everyone and ready a response. The whole party carries that advantage into what follows.'},
+ mixed:{t:'You get the alarm out, but nobody has time to prepare.'},
+ soft:['It is closer than you thought.'],
+ hard:['Whatever it is has the drop on you.']},
+{id:'forage',name:'Forage',when:'You spend a day seeking food in the wild. Barren ground gives nothing.',
+ full:{t:'You gain 1d4 rations — and another 1d4 if you have the knowledge and gear to hunt or trap.',roll:'forage'},
+ mixed:{t:'The same haul, but first you face a Discovery or a Danger. The fates choose which.',roll:'forage'},
+ soft:['The day is spent for very little.','You range further from camp than you meant to.'],
+ hard:['You come back empty-handed, and something followed you.']},
+{id:'hunker',name:'Hunker Down',when:'You take shelter and wait out the elements.',
+ full:{t:"It doesn't take long for things to clear."},
+ mixed:{t:'This is not changing any time soon. Forge ahead, or camp here and hope for morning.'},
+ soft:['The shelter is worse than it looked.'],
+ hard:['The weather finds you anyway.']},
+{id:'forge',name:'Forge Ahead',when:'You push on despite powerful opposition from the elements.',
+ full:{t:'You go as far as you are able before you have to stop and rest.'},
+ mixed:{t:'Choose one.',pick:{n:1,who:'you'}},
+ opts:['You go as far as you are able, but overtax yourself — weakened, shaken, or sick. Pick one.','You go as far as you are able, but the weather takes its deepest toll on your gear. Say how.','On second thought, maybe you are better off staying put.'],
+ soft:['You make less ground than you hoped.'],
+ hard:['The elements break something you needed.'],
+ note:'If you make progress, say where that leaves you on the map, and whether the weather shows any sign of relenting.'}
+];
+/* house table — not from the book */
+const WEATHER=T12(['The sky holds. Nothing changes.','High cloud moves in; the light goes flat.','Wind rises and stays risen.','A fine rain begins and does not stop.','Downpour. Everything is heavy and slick.','Mist thickens until the world is a room.','Still air, pressing heat, no shade.','A hard cold with an edge to it.','The storm breaks directly overhead.','A sudden clearing — take it while it lasts.','Unnatural stillness. Even the birds have quit.','Severe: blizzard, sandstorm, or worse for this country.']);
+/* ===================== plate + ledger ===================== */
+function esc(s){return String(s).replace(/[&<>"]/g,function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m];});}
+const plate=document.getElementById('plate');
+const LOG=[];
+function chainHTML(chain){
+  if(!chain||!chain.length)return '';
+  return chain.map(function(s){
+    if(s.text!==undefined)return '<div>'+esc(s.label)+' <b>'+esc(s.text)+'</b></div>';
+    const roll=s.mod?('d'+s.sides+' <span class="die">'+s.raw+'</span>'+(s.mod>0?'+':'')+s.mod+' = '+s.shown):('d'+s.sides+' <span class="die">'+s.raw+'</span>');
+    const res=String(s.result||'').replace(/[#@]/g,'');
+    return '<div>'+esc(s.label)+' &nbsp;'+roll+' &nbsp;→&nbsp; <b>'+esc(res)+'</b></div>';
+  }).join('');
+}
+function show(o){
+  const cls=o.cls||'';
+  document.getElementById('plate-kicker').textContent=o.kicker||'';
+  const h=document.getElementById('plate-head');
+  h.className='headline '+cls; h.textContent=o.headline||'';
+  let b='';
+  (o.lines||[]).forEach(function(l){
+    if(l.p){b+='<p>'+esc(l.p)+'</p>';}
+    else if(l.list){b+='<ul>'+l.list.map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+'</ul>';}
+    else{b+='<p><span class="lbl">'+esc(l.k)+'</span><br>'+esc(l.v)+'</p>';}
+  });
+  if(o.prompt)b+='<p style="color:var(--dim);font-style:italic">'+esc(o.prompt)+'</p>';
+  const extras=[];
+  const joined=JSON.stringify(o.lines||[])+(o.headline||'');
+  if(/Discovery/.test(joined))extras.push('<button class="roll ghost" data-quick="discovery">Roll a Discovery</button>');
+  if(/Danger/.test(joined))extras.push('<button class="roll ghost" data-quick="danger">Roll a Danger</button>');
+  if(extras.length)b+='<div class="row" style="margin-top:12px">'+extras.join('')+'</div>';
+  document.getElementById('plate-body').innerHTML=b;
+  document.getElementById('plate-chain').innerHTML=chainHTML(o.chain);
+  plate.classList.remove('fresh');void plate.offsetWidth;plate.classList.add('fresh');
+  if(plate.scrollIntoView)plate.scrollIntoView({block:'nearest',behavior:'smooth'});
+  logIt(o);
+}
+function plainOf(o){
+  let t=(o.kicker?o.kicker.toUpperCase()+'\n':'')+(o.headline||'')+'\n';
+  (o.lines||[]).forEach(function(l){
+    if(l.p)t+=l.p+'\n'; else if(l.list)t+=l.list.map(function(x){return '  • '+x;}).join('\n')+'\n';
+    else t+=l.k+': '+l.v+'\n';
+  });
+  if(o.prompt)t+='('+o.prompt+')\n';
+  return t;
+}
+function logIt(o){
+  LOG.push(o);
+  const box=document.getElementById('log');
+  if(LOG.length===1)box.innerHTML='';
+  const d=document.createElement('div');
+  d.className='entry';
+  d.innerHTML='<div class="t">'+esc(o.kicker||'')+'</div><div class="h '+(o.cls||'')+'">'+esc(o.headline||'')+'</div>'+
+    '<div class="d">'+(o.lines||[]).map(function(l){return l.p?esc(l.p):(l.list?esc(l.list.join(' / ')):'<em style="color:var(--dim)">'+esc(l.k)+':</em> '+esc(l.v));}).join('<br>')+'</div>';
+  box.insertBefore(d,box.firstChild);
+  document.getElementById('log-count').textContent=LOG.length+(LOG.length===1?' roll':' rolls');
+}
+function ledgerText(){return LOG.map(plainOf).join('\n----------------------------------------\n');}
+document.getElementById('log-copy').onclick=function(){
+  const t=ledgerText();
+  if(!t){this.textContent='Nothing yet';setTimeout(()=>this.textContent='Copy all',1200);return;}
+  navigator.clipboard.writeText(t).then(()=>{this.textContent='Copied';setTimeout(()=>this.textContent='Copy all',1200);},
+  ()=>{this.textContent='Select it instead';setTimeout(()=>this.textContent='Copy all',1600);});
+};
+document.getElementById('log-dl').onclick=function(){
+  const blob=new Blob([ledgerText()||'(nothing rolled yet)'],{type:'text/plain'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download='ask-the-fates-'+new Date().toISOString().slice(0,10)+'.txt';a.click();URL.revokeObjectURL(a.href);
+};
+document.getElementById('log-clear').onclick=function(){
+  if(LOG.length&&!confirm('Clear the ledger? Nothing is saved anywhere else.'))return;
+  LOG.length=0;document.getElementById('log').innerHTML='<p class="empty" style="color:var(--dim);font-style:italic;font-size:14px">Results land here in order. Copy or download before you close the tab.</p>';
+  document.getElementById('log-count').textContent='0 rolls';
+};
+document.addEventListener('click',function(e){
+  const q=e.target.getAttribute&&e.target.getAttribute('data-quick');
+  if(q==='discovery')doDiscovery();
+  if(q==='danger')doDanger();
+});
+
+/* ===================== result builders ===================== */
+function encounterOut(r){
+  const c=this;
+  return r;
+}
+function showEncounter(r,c){
+  const lines=[{k:'Category',v:r.cat+(r.sub?' → '+r.sub:'')}];
+  r.extra.forEach(function(n){lines.push({k:n,v:detail(c,n)});});
+  (r.lines||[]).forEach(function(l){lines.push(l);});
+  show({cls:r.kind,kicker:r.kind==='danger'?'Danger':'Discovery',headline:cap(r.res),lines:lines,prompt:r.prompt,chain:c.chain});
+}
+function cap(s){return s?s.charAt(0).toUpperCase()+s.slice(1):s;}
+function doDiscovery(){const c=ctx();showEncounter(rollDiscovery(c),c);}
+function doDanger(){const c=ctx();showEncounter(rollDanger(c),c);}
+
+/* ===================== decks ===================== */
+const DECKS=[
+ {id:'road',name:'See the World',page:'p. 24',blurb:'Travel, camp, weather — rewritten as plain outcomes so they fit any rules.'},
+ {id:'fates',name:'Ask the Fates',page:'p. 40',blurb:'Discoveries, Dangers, creatures, and every detail table on its own.'},
+ {id:'map',name:'Draw the Map',page:'p. 10',blurb:'Regions, places, and the steadings that sit in them.'},
+ {id:'folk',name:'Name Every Person',page:'p. 66',blurb:'Whoever they meet, whatever they are like, and who will follow them.'},
+ {id:'depths',name:'Plumb the Depths',page:'p. 54',blurb:'Build a dungeon in a minute, then find out what is in the next room.'},
+ {id:'gold',name:'Finding Treasure',page:'p. 43',blurb:'What the lair holds, and what it is worth.'}
+];
+function el(html){const d=document.createElement('div');d.innerHTML=html.trim();return d.firstChild;}
+const nav=document.getElementById('nav'),decksEl=document.getElementById('decks');
+DECKS.forEach(function(d,i){
+  const b=el('<button><span>'+d.name+'</span><span class="leader"></span><span class="num">'+d.page+'</span></button>');
+  b.onclick=function(){go(d.id);};b.id='nav-'+d.id;nav.appendChild(b);
+  const s=el('<section class="deck" id="deck-'+d.id+'"><h2>'+d.name+'</h2><p class="blurb">'+d.blurb+'</p><div class="body"></div></section>');
+  decksEl.appendChild(s);
+});
+function go(id){
+  DECKS.forEach(function(d){
+    document.getElementById('deck-'+d.id).classList.toggle('on',d.id===id);
+    document.getElementById('nav-'+d.id).setAttribute('aria-current',d.id===id?'true':'false');
+  });
+}
+function body(id){return document.querySelector('#deck-'+id+' .body');}
+function card(deck,title,note){
+  const c=el('<div class="card"><h3>'+title+'</h3>'+(note?'<p class="note">'+note+'</p>':'')+'<div class="row"></div></div>');
+  body(deck).appendChild(c);return c;
+}
+function btn(card,label,fn,cls){
+  const b=el('<button class="roll '+(cls||'')+'">'+label+'</button>');b.onclick=fn;
+  card.querySelector('.row').appendChild(b);return b;
+}
+function sel(card,label,options,onchange){
+  const w=el('<label class="inline">'+label+' <select></select></label>');
+  const s=w.querySelector('select');
+  options.forEach(function(o){const op=document.createElement('option');op.value=o;op.textContent=o;s.appendChild(op);});
+  if(onchange)s.onchange=function(){onchange(s.value);};
+  card.querySelector('.row').appendChild(w);return s;
+}
+
+/* ---------- deck 1: See the World ---------- */
+MOVES.forEach(function(m){
+  const c=card('road',m.name,m.when);
+  function resolve(tier){
+    const cx=ctx();
+    const lines=[];let head='',kick=m.name;
+    if(tier==='full'){head='Clean';lines.push({p:m.full.t});if(m.full.pick&&m.opts)lines.push({list:m.opts});}
+    else if(tier==='mixed'){
+      head='With a cost';lines.push({p:m.mixed.t});
+      if(m.mixed.pick&&m.mixed.pick.who==='fate'){const pick=any(m.opts);cx.chain.push({label:'The fates choose',text:pick});lines.push({p:pick});}
+      else if(m.mixed.pick&&m.opts)lines.push({list:m.opts});
+    } else {
+      head='Trouble';
+      if(m.badOverride){lines.push({p:m.badOverride});}
+      const hard=any(m.hard);cx.chain.push({label:'The fates make a move',text:hard});
+      lines.push({p:hard});
+      lines.push({k:'Softer, if you would rather build up to it',v:m.soft.join(' · ')});
+    }
+    if(m.id==='forage'&&tier!=='bad'){
+      const a=dice(1,4),b=dice(1,4);
+      cx.chain.push({label:'Rations (1d4, and 1d4 more if equipped)',text:a+' — or '+(a+b)+' with the gear to hunt or trap'});
+      lines.push({k:'Rations',v:a+' — or '+(a+b)+' if you have the knowledge and gear to hunt or trap'});
+    }
+    if(m.note)lines.push({p:m.note});
+    show({cls:tier==='bad'?'danger':'',kicker:kick,headline:head,lines:lines,chain:cx.chain});
+  }
+  btn(c,'Roll 2d6',function(){
+    const a=die(6),b=die(6),t=a+b;
+    const tier=t>=10?'full':(t>=7?'mixed':'bad');
+    const cx=ctx();
+    resolve(tier);
+    const ch=document.getElementById('plate-chain');
+    ch.innerHTML='<div>'+m.name+' &nbsp;2d6 <span class="die">'+a+'+'+b+'</span> = <b>'+t+'</b></div>'+ch.innerHTML;
+  },'primary');
+  btn(c,'Clean',function(){resolve('full');});
+  btn(c,'With a cost',function(){resolve('mixed');});
+  btn(c,'Trouble',function(){resolve('bad');});
+});
+(function(){
+  const c=card('road','Journey by a safe route','No roll. Mark the destination, agree how long it takes, and eat one ration per person per day when you arrive.');
+  btn(c,'A detail of the way',function(){
+    const cx=ctx();
+    const lines=[{k:'The country here',v:detail(cx,'Terrain')},{k:'How it strikes you',v:detail(cx,'Adjective')},{k:'One odd thing',v:detail(cx,'Oddity')}];
+    show({kicker:'Color',headline:'Something they notice on the way',lines:lines,prompt:'Think big, then think small. One or two details, then move on.',chain:cx.chain});
+  },'primary');
+  btn(c,'The weather turns',function(){
+    const cx=ctx();
+    const w=step(cx,'Weather (house table)',12,0,WEATHER);
+    show({kicker:'Weather',headline:w,lines:[{p:'Tie it to the ground and to the people walking on it. Weather that changes nothing is only scenery.'}],chain:cx.chain});
+  });
+  btn(c,'Die of Fate (1d6)',function(){
+    const r=die(6);
+    const read=['Flatly no, and it costs them','No','Not really','More or less','Yes','Yes, and better than they hoped'][r-1];
+    show({kicker:'Die of Fate',headline:read,lines:[{p:'Somebody asked a question and the answer was not on the tip of your tongue. High favors the asker; low does not. Fit it to the fiction as it stands.'}],chain:[{label:'Die of Fate',sides:6,raw:r,mod:0,shown:r,result:read}]});
+  });
+})();
+
+/* ---------- deck 2: Ask the Fates ---------- */
+(function(){
+  const c=card('fates','Discovery','Something interesting that is not, yet, a threat.');
+  btn(c,'Roll a Discovery',doDiscovery,'primary');
+  const d=card('fates','Danger','Something that will do harm if left alone.');
+  btn(d,'Roll a Danger',doDanger,'primary');
+  const cr=card('fates','Creature','Start with a real-world animal, then put a spin on it.');
+  const types=['Any','Beast','Human','Humanoid','Monster'];
+  const s=sel(cr,'Kind',types);
+  btn(cr,'Roll a creature',function(){
+    const cx=ctx();const t=s.value==='Any'?null:s.value;
+    const r=rollCreature(cx,t);
+    const lines=[{k:'Type',v:r.type}];
+    r.extra.forEach(function(n){lines.push({k:n,v:detail(cx,n)});});
+    show({kicker:'Creature',headline:cap(r.text),lines:lines,prompt:'Give every monster life. What does it want, and what does it do about it?',chain:cx.chain});
+  },'primary');
+  btn(cr,'Unnatural entity',function(){
+    const cx=ctx();const e=rollEntity(cx);
+    const lines=[];e.extra.forEach(function(n){lines.push({k:n,v:detail(cx,n)});});
+    show({cls:'danger',kicker:'Unnatural entity',headline:cap(e.text),lines:lines,chain:cx.chain});
+  });
+  const dt=card('fates','A single detail','When you only need one answer. Cross-references resolve themselves.');
+  const ds=sel(dt,'Table',Object.keys(DET));
+  btn(dt,'Roll it',function(){
+    const cx=ctx();const v=detail(cx,ds.value);
+    show({kicker:ds.value,headline:cap(v),chain:cx.chain});
+  },'primary');
+  btn(dt,'Three at once',function(){
+    const cx=ctx();const keys=Object.keys(DET);const picks=[];
+    for(let i=0;i<3;i++){const k=any(keys);picks.push({k:k,v:detail(cx,k)});}
+    show({kicker:'Whatever the dice hand you',headline:'Three details',lines:picks,prompt:'Stop rolling as soon as you have a picture.',chain:cx.chain});
+  });
+})();
+
+/* ---------- deck 3: Draw the Map ---------- */
+(function(){
+  const n=card('map','Naming things','Pick the tongue these lands are named in. It feeds the [Name] results below.');
+  sel(n,'Culture',Object.keys(CULTURES),function(v){CULTURE=v;});
+  const r=card('map','A region','A large swath of land or sea, set by its terrain or its border.');
+  btn(r,'Name a region',function(){
+    const cx=ctx();const nm=regionName(cx);
+    const lines=[{k:'Climate',v:any(['Frigid','Temperate','Temperate','Temperate','Torrid'])},{k:'Terrain',v:detail(cx,'Terrain')},{k:'How dangerous',v:any(['Safe','Unsafe','Unsafe','Perilous'])},{k:'Alignment',v:detail(cx,'Alignment')}];
+    show({kicker:'Region',headline:nm,lines:lines,prompt:'Tags are shorthand for paragraphs you did not have to write. Add more as you need them.',chain:cx.chain});
+  },'primary');
+  const p=card('map','A place','An area, a site, a landmark — anything worth marking.');
+  btn(p,'Name a place',function(){
+    const cx=ctx();const nm=placeName(cx);
+    show({kicker:'Place',headline:nm,lines:[{k:'How dangerous',v:any(['Safe','Unsafe','Unsafe','Perilous'])},{k:'Visibility',v:detail(cx,'Visibility')}],chain:cx.chain});
+  },'primary');
+  const st=card('map','A steading','Village, town, keep, or city — with the thing it has going for it, and the thing eating at it.');
+  const ss=sel(st,'Type',['Roll for it','Village','Town','Keep','City']);
+  btn(st,'Build a steading',function(){
+    const cx=ctx();const t=ss.value==='Roll for it'?null:ss.value;
+    const s=rollSteading(cx,t);
+    show({kicker:s.type,headline:s.name,lines:s.lines,prompt:'Who runs it, and who do they answer to?',chain:cx.chain});
+  },'primary');
+  const st2=card('map','A structure out in the country','Earthworks, a road, a shrine, a ruin — and who left it there.');
+  btn(st2,'Roll a structure',function(){
+    const cx=ctx();const s=rollStructure(cx,0);
+    const lines=[{k:'Kind',v:s.sub}].concat(s.lines);
+    s.extra.forEach(function(n){lines.push({k:n,v:detail(cx,n)});});
+    show({kicker:'Structure',headline:cap(s.res),lines:lines,chain:cx.chain});
+  },'primary');
+})();
+
+/* ---------- deck 4: Name Every Person ---------- */
+(function(){
+  const nm=card('folk','A name','Drawn from the culture selected under Draw the Map.');
+  btn(nm,'A person',function(){
+    const c1=CULTURE;
+    show({kicker:'Name — '+c1,headline:personName(c1),lines:[{k:'Another two',v:personName(c1)+', '+personName(c1)}]});
+  },'primary');
+  btn(nm,'A steading',function(){show({kicker:'Steading name — '+CULTURE,headline:any(CULTURES[CULTURE].s)});});
+  btn(nm,'A horse or beast',function(){show({kicker:'Mount name — '+CULTURE,headline:any(CULTURES[CULTURE].mt),lines:[{p:'Name every animal. Treat the notable ones as followers.'}]});});
+  const np=card('folk','Somebody they meet','Where you are decides who turns up.');
+  const cs=sel(np,'Where',['Roll for it','Wilderness','Rural','Urban']);
+  btn(np,'Who is it',function(){
+    const cx=ctx();const where=cs.value==='Roll for it'?null:cs.value;
+    const job=npcOccupation(cx,where);
+    const t=npcTrait(cx);
+    const lines=[{k:'Trade',v:job},{k:t.cat,v:t.text},{k:'Disposition',v:detail(cx,'Disposition')},{k:'Doing what',v:detail(cx,'Activity')}];
+    show({kicker:'NPC',headline:personName(CULTURE),lines:lines,prompt:'One name and one or two traits are enough to play them.',chain:cx.chain});
+  },'primary');
+  btn(np,'One more trait',function(){
+    const cx=ctx();const t=npcTrait(cx);
+    show({kicker:'Trait — '+t.cat,headline:cap(t.text),chain:cx.chain});
+  });
+  const fl=card('folk','A follower','Porters, guides, guards, and the ones who turn out to be more than that.');
+  btn(fl,'Roll one up',function(){
+    const cx=ctx();const f=rollFollower(cx);
+    const t=npcTrait(cx);
+    const lines=f.lines.concat([{k:t.cat,v:t.text}]);
+    show({kicker:'Follower',headline:personName(CULTURE),lines:lines,prompt:'What do they know best? That is their ___-wise, and the first thing they will offer you.',chain:cx.chain});
+  },'primary');
+})();
+/* ---------- deck 5: Plumb the Depths ---------- */
+(function(){
+  let CUR=null;
+  const c=card('depths','Make a dungeon','Foundation, size, themes. Countdowns live on this page only — write them down if they matter.');
+  const panel=el('<div style="margin-top:12px"></div>');
+  c.appendChild(panel);
+  function drawPanel(){
+    if(!CUR){panel.innerHTML='';return;}
+    panel.innerHTML='<hr class="hr"><div style="font-family:\'IM Fell English SC\',serif;font-size:20px">'+esc(CUR.name)+'</div>'+
+      '<p class="note" style="margin:2px 0 10px">'+esc(CUR.foundation)+' · '+esc(CUR.size.n)+' · up to '+CUR.size.areas+' common and '+CUR.size.areas+' unique areas</p>';
+    CUR.themes.forEach(function(t,i){
+      const line=el('<div class="theme-line"><span class="nm">'+esc(t.name)+'</span><span class="countdown"></span></div>');
+      const cd=line.querySelector('.countdown');
+      for(let j=0;j<CUR.countdown;j++){
+        const box=el('<span class="box'+(j<t.marked?' marked':'')+'"></span>');
+        box.title='Mark off';
+        box.onclick=function(){t.marked=(j<t.marked)?j:j+1;drawPanel();};
+        cd.appendChild(box);
+      }
+      panel.appendChild(line);
+    });
+    const row=el('<div class="row" style="margin-top:12px"></div>');
+    const b=el('<button class="roll primary">See what they find</button>');
+    b.onclick=seeWhatTheyFind;row.appendChild(b);
+    const b2=el('<button class="roll">Name this dungeon again</button>');
+    b2.onclick=function(){CUR.name=placeName(null);drawPanel();};row.appendChild(b2);
+    panel.appendChild(row);
+    if(CUR.themes.every(function(t){return t.marked>=CUR.countdown;}))
+      panel.appendChild(el('<p class="note" style="color:var(--brass);margin-top:10px">Every countdown is full. The place has been explored.</p>'));
+  }
+  function seeWhatTheyFind(){
+    const cx=ctx();
+    const area=step(cx,'See what they find',12,0,DUNG.area);
+    const lines=[{k:'Area',v:area}];
+    if(/Themed/.test(area)){
+      const open=CUR.themes.filter(function(t){return t.marked<CUR.countdown;});
+      const t=open.length?any(open):any(CUR.themes);
+      if(t.marked<CUR.countdown)t.marked++;
+      cx.chain.push({label:'Theme in play',text:t.name});
+      lines.push({k:'Theme',v:t.name+(open.length?'':' (countdowns already full)')});
+      drawPanel();
+    }
+    if(/Discovery/.test(area)){const d=dungeonDiscovery(cx);lines.push({k:'Discovery — '+d.cat,v:d.text});}
+    if(/Danger/.test(area)){const d=dungeonDanger(cx);lines.push({k:'Danger — '+d.cat,v:d.text});
+      if(d.extra)d.extra.forEach(function(n){lines.push({k:n,v:detail(cx,n)});});}
+    if(/empty/.test(area))lines.push({p:'Nothing here — but leave a way onward.'});
+    show({cls:/Danger/.test(area)?'danger':'discovery',kicker:CUR?CUR.name:'The dungeon',headline:area,lines:lines,
+      prompt:'Describe it through the foundation and the theme. Intensify as they press on.',chain:cx.chain});
+  }
+  btn(c,'Generate a dungeon',function(){
+    const cx=ctx();const d=rollDungeon(cx);
+    const name=placeName(cx);
+    CUR={name:name,foundation:d.foundation,size:d.size,countdown:d.countdown,
+         themes:d.themes.map(function(t){return {name:t,marked:0};})};
+    drawPanel();
+    show({kicker:'Dungeon',headline:name,lines:d.lines,prompt:'Rumor says one thing; only those who go down find out the rest.',chain:cx.chain});
+  },'primary');
+  btn(c,'Rumors to ask about',function(){
+    const cx=ctx();
+    show({kicker:'Rumors and legends',headline:'What have they heard?',lines:[
+      {list:['Who or what is believed to have built the place?','What was it built for?','How did it come to ruin?','What Dangers is it said to hide?','What Discoveries may lie within?']},
+      {p:'Answer these yourself, ask the players, or roll them below. However you get them, they may or may not be true.'}],chain:[]});
+  });
+  const c2=card('depths','One room at a time','If you already know the place, roll only what you need.');
+  btn(c2,'Dungeon discovery',function(){
+    const cx=ctx();const d=dungeonDiscovery(cx);
+    show({cls:'discovery',kicker:'Dungeon discovery — '+d.cat,headline:cap(d.text),chain:cx.chain});
+  },'primary');
+  btn(c2,'Dungeon danger',function(){
+    const cx=ctx();const d=dungeonDanger(cx);
+    const lines=[];if(d.extra)d.extra.forEach(function(n){lines.push({k:n,v:detail(cx,n)});});
+    show({cls:'danger',kicker:'Dungeon danger — '+d.cat,headline:cap(d.text),lines:lines,chain:cx.chain});
+  },'primary');
+  btn(c2,'How it fell',function(){
+    const cx=ctx();
+    show({kicker:'Ruination',headline:cap(detail(cx,'Ruination')),chain:cx.chain});
+  });
+})();
+
+/* ---------- deck 6: Finding Treasure ---------- */
+(function(){
+  const c=card('gold','Unguarded treasure','Nobody is watching it. Roll 2d6 and take the lower — unless both come up six.');
+  btn(c,'Roll it',function(){
+    const cx=ctx();const t=rollTreasure(cx,{unguarded:true});
+    show({kicker:'Treasure',headline:t.text,lines:t.lines,chain:cx.chain});
+  },'primary');
+  const m=card('gold',"A monster's hoard",'Start from its damage die. Most monsters do not carry their valuables about with them.');
+  const ds=sel(m,'Damage die',['d4','d6','d8','d10','d12']);ds.value='d8';
+  const opts=['Hoarder','Lords over others','Ancient','Magical','Divine','Planar','Far from home'];
+  const wrap=el('<div class="row" style="margin-top:8px"></div>');
+  const boxes={};
+  opts.forEach(function(o){
+    const l=el('<label class="chk"><input type="checkbox"> '+o+'</label>');
+    boxes[o]=l.querySelector('input');wrap.appendChild(l);
+  });
+  m.appendChild(wrap);
+  const hoardRow=el('<div class="row" style="margin-top:10px"></div>');
+  m.appendChild(hoardRow);
+  function addTo(row,label,fn,cls){const b=el('<button class="roll '+(cls||'')+'">'+label+'</button>');b.onclick=fn;row.appendChild(b);return b;}
+  addTo(hoardRow,'Roll the hoard',function(){
+    const cx=ctx();
+    const t=rollTreasure(cx,{dmg:parseInt(ds.value.slice(1),10),hoarder:boxes['Hoarder'].checked,lord:boxes['Lords over others'].checked,
+      ancient:boxes['Ancient'].checked,magical:boxes['Magical'].checked,divine:boxes['Divine'].checked,planar:boxes['Planar'].checked,far:boxes['Far from home'].checked});
+    show({kicker:'Treasure',headline:t.text,lines:t.lines,prompt:'Rolling several smaller results instead of one big one makes for more interesting loot.',chain:cx.chain});
+  },'primary');
+  const i=card('gold','Just the item','When you know they found something, but not what.');
+  btn(i,'What is it',function(){
+    const cx=ctx();const v=rollItem(cx);
+    show({kicker:'Item',headline:cap(v),chain:cx.chain});
+  },'primary');
+  btn(i,'And it is magical',function(){
+    const cx=ctx();const v=rollItem(cx);
+    const lines=[{k:'Ability',v:detail(cx,'Ability')},{k:'Magic Type',v:detail(cx,'Magic Type')}];
+    show({kicker:'Magic item',headline:cap(v),lines:lines,prompt:'Describe what they see. Let the properties come out through use and study.',chain:cx.chain});
+  });
+})();
+
+go('road');
+</script>
+</body>
+</html>
