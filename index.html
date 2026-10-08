@@ -3,48 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Rehearsal tracks</title>
+<title>Peter's Apps</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Alegreya:wght@500;700&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
-<script>
-/* =====================================================================
-   SONG LIST — edit this part only.
-
-   folder: the folder (next to this index.html) holding that song's mp3s.
-   files:  S, A, T, B = the four parts. P = accompaniment-only track.
-           Leave out any key you don't have.
-
-   accompanimentBaked:
-     false -> each part file is the voice ALONE (P is a separate track).
-     true  -> each part file ALREADY HAS the accompaniment mixed in.
-              * If you also list a P (accompaniment-only) file, the page
-                subtracts it from each part to get clean voice-only tracks.
-              * With no P file, the page lowers each part's volume as you
-                add parts so the accompaniment doesn't pile up.
-   ===================================================================== */
-const SONGS = [
-  {
-    title: "Christus Victor (Amen)",
-    folder: "songs/Christus Victor",
-    accompanimentBaked: false,
-    files: { S: "soprano.mp3", A: "alto.mp3", T: "tenor.mp3", B: "bass.mp3", P: "accompaniment.mp3" }
-  }
-  // Add the next song like this:
-  // ,{
-  //   title: "Second song",
-  //   folder: "songs/Second Song",
-  //   accompanimentBaked: false,
-  //   files: { S: "soprano.mp3", A: "alto.mp3", T: "tenor.mp3", B: "bass.mp3", P: "accompaniment.mp3" }
-  // }
-];
-</script>
+<link href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,500;0,700;1,500&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
 <style>
 :root {
   --bg: #EDF0F4; --surface: #FFFFFF; --ink: #1D2A44; --muted: #5B6780; --line: #CCD3DE;
-  --S: #B83A62; --A: #A86C08; --T: #137871; --B: #3B4BA0; --P: #56645A;
-  --on-ink: #FFFFFF;
-  --loop: rgba(59, 75, 160, 0.22);
+  --hebrew: #137871; --dice: #B83A62; --wilds: #A86C08; --music: #7A4FA3;
   box-sizing: border-box;
   padding-top: env(safe-area-inset-top, 0px);
   padding-bottom: env(safe-area-inset-bottom, 0px);
@@ -52,14 +18,12 @@ const SONGS = [
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --bg: #141A26; --surface: #1E2636; --ink: #E6EAF2; --muted: #9AA5BA; --line: #33405A;
-    --S: #E0708F; --A: #E0A93F; --T: #4BB8B0; --B: #8C99E6; --P: #9AAB9E;
-    --on-ink: #141A26; --loop: rgba(140, 153, 230, 0.28);
+    --hebrew: #4BB8B0; --dice: #E0708F; --wilds: #E0A93F; --music: #BE95E0;
   }
 }
 :root[data-theme="dark"] {
   --bg: #141A26; --surface: #1E2636; --ink: #E6EAF2; --muted: #9AA5BA; --line: #33405A;
-  --S: #E0708F; --A: #E0A93F; --T: #4BB8B0; --B: #8C99E6; --P: #9AAB9E;
-  --on-ink: #141A26; --loop: rgba(140, 153, 230, 0.28);
+  --hebrew: #4BB8B0; --dice: #E0708F; --wilds: #E0A93F; --music: #BE95E0;
 }
 *, *::before, *::after { box-sizing: inherit; }
 html, body { margin: 0; }
@@ -68,554 +32,91 @@ body {
   font-family: "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", sans-serif;
   font-size: 1.05rem; line-height: 1.5;
 }
-.wrap { max-width: 34rem; margin: 0 auto; padding: 1.5rem 1.1rem 3rem; }
-h1, h2 { font-family: "Alegreya", Georgia, "Times New Roman", serif; font-weight: 700; line-height: 1.15; margin: 0; }
-h1 { font-size: 2.1rem; }
-h2 { font-size: 1.6rem; }
-.lede { color: var(--muted); margin: .35rem 0 1.5rem; }
-button { font: inherit; color: inherit; cursor: pointer; }
-button:focus-visible, input:focus-visible, summary:focus-visible { outline: 3px solid var(--B); outline-offset: 2px; }
+.wrap { max-width: 36rem; margin: 0 auto; padding: 2.5rem 1.1rem 3.5rem; }
 
-/* Song list */
-.songs { list-style: none; margin: 0 0 1.75rem; padding: 0; display: grid; gap: .5rem; }
-.song-btn {
-  width: 100%; text-align: left; padding: .8rem 1rem; border-radius: 10px;
-  background: var(--surface); border: 1px solid var(--line);
-  font-family: "Alegreya", Georgia, serif; font-size: 1.2rem; font-weight: 500;
+h1 {
+  font-family: "Alegreya", Georgia, "Times New Roman", serif;
+  font-weight: 700; font-size: 2.4rem; line-height: 1.1; margin: 0;
 }
-.song-btn[aria-current="true"] { border-color: var(--ink); box-shadow: inset 4px 0 0 var(--ink); }
+.lede { color: var(--muted); margin: .4rem 0 2rem; max-width: 30rem; }
 
-/* Player */
-.player { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 1.25rem 1.1rem 1.1rem; }
-.status { min-height: 1.5em; color: var(--muted); margin: .25rem 0 1rem; font-size: .95rem; }
-.status.error { color: var(--S); font-weight: 700; }
-
-.parts { display: grid; grid-template-columns: repeat(auto-fit, minmax(58px, 1fr)); gap: .5rem; }
-.part {
-  --c: var(--ink);
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  min-height: 88px; border-radius: 12px; padding: .4rem .2rem;
-  background: transparent; border: 2px solid var(--c); color: var(--c);
-  transition: background-color .12s ease, color .12s ease;
+.group { margin-bottom: 2.25rem; }
+.group h2 {
+  font-family: "Alegreya", Georgia, serif; font-style: italic; font-weight: 500;
+  font-size: 1.25rem; margin: 0 0 .7rem; color: var(--muted);
 }
-.part .letter { font-family: "Alegreya", Georgia, serif; font-weight: 700; font-size: 2.2rem; line-height: 1; }
-.part .letter.small { font-size: 1.35rem; padding: .35rem 0 .2rem; }
-.part .name { font-size: .78rem; margin-top: .3rem; }
-.part[aria-pressed="true"] { background: var(--c); color: var(--on-ink); }
-.part[aria-pressed="false"] .letter { opacity: .85; }
+.apps { list-style: none; margin: 0; padding: 0; display: grid; gap: .6rem; }
 
-.presets { display: flex; flex-wrap: wrap; gap: .4rem; margin: .75rem 0 1.25rem; }
-.chip {
-  border: 1px solid var(--line); background: var(--bg); border-radius: 999px;
-  padding: .35rem .85rem; font-size: .92rem;
+.app {
+  display: block; text-decoration: none; color: inherit;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+  padding: .9rem 1.05rem; border-left: 5px solid var(--accent, var(--ink));
 }
-.note { font-size: .9rem; color: var(--muted); margin: -.6rem 0 1rem; }
-
-.transport { display: grid; grid-template-columns: auto auto 1fr; align-items: center; gap: .6rem; }
-.play {
-  width: 58px; height: 58px; border-radius: 50%; border: none;
-  background: var(--ink); color: var(--bg); display: grid; place-items: center;
+.app:hover, .app:focus-visible { border-color: var(--accent, var(--ink)); }
+.app:focus-visible { outline: 3px solid var(--accent, var(--ink)); outline-offset: 2px; }
+.app .name {
+  font-family: "Alegreya", Georgia, serif; font-weight: 700; font-size: 1.3rem;
+  line-height: 1.2; display: block;
 }
-.play svg { width: 24px; height: 24px; fill: currentColor; }
-.back { border: 1px solid var(--line); background: var(--bg); border-radius: 999px; padding: .45rem .7rem; font-size: .9rem; }
-.time { text-align: right; font-variant-numeric: tabular-nums; color: var(--muted); font-size: .95rem; }
+.app .what { color: var(--muted); font-size: .95rem; display: block; margin-top: .2rem; }
 
-.scrub { width: 100%; margin: 1rem 0 .25rem; accent-color: var(--ink); height: 28px; background: transparent; }
-.scrub-track { position: relative; }
-.loop-band { position: absolute; top: 50%; height: 12px; transform: translateY(-50%); background: var(--loop); border-radius: 4px; pointer-events: none; display: none; }
-
-.loop { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; margin-top: .5rem; }
-.loop-state { font-size: .9rem; color: var(--muted); flex-basis: 100%; margin-top: .2rem; font-variant-numeric: tabular-nums; }
-
-.save { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; margin-top: 1rem; }
-.save-state { font-size: .9rem; color: var(--muted); }
-.save button[disabled] { opacity: .5; cursor: default; }
-details.balance { margin-top: 1.25rem; border-top: 1px solid var(--line); padding-top: .75rem; }
-details.balance summary { cursor: pointer; font-weight: 700; }
-.vol-row { display: grid; grid-template-columns: 7.5rem 1fr; align-items: center; gap: .6rem; margin-top: .6rem; }
-.vol-row label { font-size: .95rem; }
-.vol-row input { width: 100%; }
-
-.tips { color: var(--muted); font-size: .88rem; margin-top: 1.75rem; }
-.tips p { margin: .35rem 0; }
-[hidden] { display: none !important; }
-@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+footer { border-top: 1px solid var(--line); padding-top: 1rem; color: var(--muted); font-size: .9rem; }
 </style>
 </head>
 <body>
 <div class="wrap">
-  <h1>Rehearsal tracks</h1>
-  <p class="lede">Pick a song, then choose which parts you want to hear.</p>
+  <h1>Peter's Apps</h1>
+  <p class="lede">Small tools I built for study, singing, and games. Everything runs in the browser — nothing to install.</p>
 
-  <ul class="songs" id="songs" aria-label="Songs"></ul>
-
-  <section class="player" id="player" hidden aria-labelledby="songTitle">
-    <h2 id="songTitle"></h2>
-    <div class="status" id="status" role="status" aria-live="polite"></div>
-
-    <div id="controls" hidden>
-      <div class="parts" id="parts" role="group" aria-label="Parts"></div>
-      <div class="presets" id="presets"></div>
-      <p class="note" id="bakedNote" hidden>The accompaniment is built into each part on this song, so it plays whenever a part is on.</p>
-
-      <div class="transport">
-        <button class="play" id="playBtn" aria-label="Play"></button>
-        <button class="back" id="backBtn" aria-label="Back 10 seconds">−10 s</button>
-        <div class="time" id="time">0:00 / 0:00</div>
-      </div>
-      <div class="scrub-track">
-        <div class="loop-band" id="loopBand"></div>
-        <input class="scrub" id="scrub" type="range" min="0" max="1" step="0.01" value="0" aria-label="Position in song">
-      </div>
-
-      <div class="loop">
-        <button class="chip" id="loopStart">Loop starts here</button>
-        <button class="chip" id="loopEnd">Loop ends here</button>
-        <button class="chip" id="loopClear" hidden>Stop looping</button>
-        <div class="loop-state" id="loopState"></div>
-      </div>
-
-      <div class="save">
-        <button class="chip" id="saveBtn">Download this mix</button>
-        <span class="save-state" id="saveState"></span>
-      </div>
-
-      <details class="balance">
-        <summary>Balance</summary>
-        <div id="vols"></div>
-      </details>
-    </div>
+  <section class="group">
+    <h2>Study</h2>
+    <ul class="apps">
+      <li>
+        <a class="app" href="hebrew-verbs/" style="--accent: var(--hebrew)">
+          <span class="name">Hebrew Verb Drills</span>
+          <span class="what">Practice stems and principal parts</span>
+        </a>
+      </li>
+    </ul>
   </section>
 
-  <div class="tips">
-    <p>No sound on an iPhone? Check that the silent switch is off.</p>
-    <p>Playback stops if your screen locks, so keep it awake while you practice.</p>
-  </div>
+  <section class="group">
+    <h2>Singing</h2>
+    <ul class="apps">
+      <li>
+        <a class="app" href="satb-mixer/" style="--accent: var(--music)">
+          <span class="name">Rehearsal Tracks</span>
+          <span class="what">Pick a song and hear any combination of parts</span>
+        </a>
+      </li>
+    </ul>
+  </section>
+
+  <section class="group">
+    <h2>Table</h2>
+    <ul class="apps">
+      <li>
+        <a class="app" href="character-forge/" style="--accent: var(--dice)">
+          <span class="name">Character Forge</span>
+          <span class="what">Build a D&amp;D 5e character step by step</span>
+        </a>
+      </li>
+      <li>
+        <a class="app" href="mythic/" style="--accent: var(--dice)">
+          <span class="name">Mythic GME</span>
+          <span class="what">Fate questions, scene checks, and random events</span>
+        </a>
+      </li>
+      <li>
+        <a class="app" href="perilous-wilds/" style="--accent: var(--wilds)">
+          <span class="name">Perilous Wilds</span>
+          <span class="what">Journeys, discoveries, and dungeon generation</span>
+        </a>
+      </li>
+    </ul>
+  </section>
+
+  <footer>Built with Claude. Best on a phone or tablet.</footer>
 </div>
-
-<script>
-const PARTS = {
-  S: { name: "Soprano", letter: "S" },
-  A: { name: "Alto", letter: "A" },
-  T: { name: "Tenor", letter: "T" },
-  B: { name: "Bass", letter: "B" },
-  P: { name: "Accompaniment", letter: "Acc", short: "Accomp." }
-};
-const ORDER = ["S", "A", "T", "B", "P"];
-const VOICES = ["S", "A", "T", "B"];
-const STORE_KEY = "satb-mixer:v1";
-
-const $ = id => document.getElementById(id);
-const PLAY_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg>';
-const PAUSE_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4h4.5v16H6zM13.5 4H18v16h-4.5z"/></svg>';
-
-let ctx = null, master = null;
-let bufs = {}, gains = {}, keys = [], mode = "separate", duration = 0;
-let on = {}, vol = {};
-let playing = false, offset = 0, startAt = 0, sources = [], playId = 0, loadToken = 0;
-let loop = { a: null, b: null };
-let dragging = false, currentSong = -1;
-
-/* ---------- saved preferences ---------- */
-function loadPrefs() {
-  try { return JSON.parse(localStorage.getItem(STORE_KEY)) || {}; } catch (e) { return {}; }
-}
-function savePrefs() {
-  try { localStorage.setItem(STORE_KEY, JSON.stringify({ song: currentSong, on, vol })); } catch (e) {}
-}
-const prefs = loadPrefs();
-
-/* ---------- audio setup ---------- */
-function getCtx() {
-  if (ctx) return ctx;
-  const AC = window.AudioContext || window.webkitAudioContext;
-  try { ctx = new AC({ sampleRate: 32000, latencyHint: "playback" }); } // lower rate keeps memory manageable on phones
-  catch (e) { ctx = new AC(); }
-  master = ctx.createGain();
-  master.connect(ctx.destination);
-  try { if (navigator.audioSession) navigator.audioSession.type = "playback"; } catch (e) {}
-  return ctx;
-}
-function decode(ab) {
-  return new Promise((res, rej) => {
-    const p = ctx.decodeAudioData(ab, res, rej);
-    if (p && p.then) p.then(res, rej);
-  });
-}
-function toMono(buf) {
-  if (buf.numberOfChannels === 1) return buf;
-  const out = ctx.createBuffer(1, buf.length, buf.sampleRate);
-  const o = out.getChannelData(0), n = buf.numberOfChannels;
-  for (let c = 0; c < n; c++) {
-    const d = buf.getChannelData(c);
-    for (let i = 0; i < d.length; i++) o[i] += d[i] / n;
-  }
-  return out;
-}
-function subtract(part, acc) {
-  const out = ctx.createBuffer(1, part.length, part.sampleRate);
-  const o = out.getChannelData(0), p = part.getChannelData(0), a = acc.getChannelData(0);
-  const n = Math.min(p.length, a.length);
-  for (let i = 0; i < p.length; i++) o[i] = i < n ? p[i] - a[i] : p[i];
-  return out;
-}
-
-/* ---------- song list ---------- */
-function renderSongs() {
-  const ul = $("songs");
-  ul.innerHTML = "";
-  SONGS.forEach((s, i) => {
-    const li = document.createElement("li");
-    const b = document.createElement("button");
-    b.className = "song-btn";
-    b.textContent = s.title;
-    b.setAttribute("aria-current", i === currentSong ? "true" : "false");
-    b.addEventListener("click", () => loadSong(i));
-    li.appendChild(b);
-    ul.appendChild(li);
-  });
-}
-
-async function loadSong(i) {
-  if (i === currentSong && keys.length) return;
-  const token = ++loadToken;
-  stopSources(); playing = false; offset = 0; loop = { a: null, b: null };
-  bufs = {}; gains = {}; keys = [];
-  currentSong = i; savePrefs(); renderSongs();
-
-  const song = SONGS[i];
-  $("player").hidden = false;
-  $("controls").hidden = true;
-  $("songTitle").textContent = song.title;
-  setStatus("Loading…");
-  getCtx();
-
-  const wanted = ORDER.filter(k => song.files && song.files[k]);
-  if (!wanted.length) { setStatus("This song has no files listed yet.", true); return; }
-
-  try {
-    // Download in parallel, decode one at a time (easier on phone memory).
-    const downloads = wanted.map(k => {
-      const url = song.folder.replace(/\/$/, "").split("/").map(encodeURIComponent).join("/")
-        + "/" + encodeURIComponent(song.files[k]);
-      return fetch(url).then(r => {
-        if (!r.ok) throw new Error(`Couldn't find ${url} (error ${r.status}). Check the file name and folder in the song list.`);
-        return r.arrayBuffer();
-      });
-    });
-    const loaded = {};
-    for (let n = 0; n < wanted.length; n++) {
-      const k = wanted[n];
-      setStatus(`Loading ${PARTS[k].name.toLowerCase()} (${n + 1} of ${wanted.length})…`);
-      const ab = await downloads[n];
-      if (token !== loadToken) return;
-      loaded[k] = toMono(await decode(ab));
-      if (token !== loadToken) return;
-    }
-
-    if (song.accompanimentBaked && loaded.P) {
-      setStatus("Separating voices from accompaniment…");
-      await new Promise(r => setTimeout(r, 20));
-      VOICES.forEach(k => { if (loaded[k]) loaded[k] = subtract(loaded[k], loaded.P); });
-      mode = "separate";
-    } else {
-      mode = song.accompanimentBaked ? "baked" : "separate";
-    }
-
-    bufs = loaded;
-    keys = ORDER.filter(k => bufs[k]);
-    duration = Math.max(...keys.map(k => bufs[k].duration));
-    keys.forEach(k => {
-      const g = ctx.createGain();
-      g.gain.value = 0;
-      g.connect(master);
-      gains[k] = g;
-      if (on[k] === undefined) on[k] = prefs.on && prefs.on[k] !== undefined ? prefs.on[k] : true;
-      if (vol[k] === undefined) vol[k] = prefs.vol && prefs.vol[k] !== undefined ? prefs.vol[k] : 1;
-    });
-
-    renderControls();
-    updateGains(true);
-    setStatus("");
-    $("controls").hidden = false;
-    tick();
-  } catch (err) {
-    if (token !== loadToken) return;
-    setStatus(err && err.message && err.message.startsWith("Couldn't")
-      ? err.message
-      : "One of the audio files couldn't be read. Make sure they're mp3s and the names match the song list.", true);
-  }
-}
-
-function setStatus(msg, isError) {
-  const s = $("status");
-  s.textContent = msg;
-  s.classList.toggle("error", !!isError);
-}
-
-/* ---------- controls ---------- */
-function renderControls() {
-  const parts = $("parts");
-  parts.innerHTML = "";
-  keys.forEach(k => {
-    const b = document.createElement("button");
-    b.className = "part";
-    b.style.setProperty("--c", `var(--${k})`);
-    b.setAttribute("aria-pressed", on[k] ? "true" : "false");
-    b.setAttribute("aria-label", PARTS[k].name);
-    b.innerHTML = `<span class="letter${k === "P" ? " small" : ""}">${PARTS[k].letter}</span><span class="name">${PARTS[k].short || PARTS[k].name}</span>`;
-    b.addEventListener("click", () => { on[k] = !on[k]; syncParts(); });
-    parts.appendChild(b);
-  });
-
-  const presets = $("presets");
-  presets.innerHTML = "";
-  const has = k => keys.includes(k);
-  const list = [["All parts", VOICES]];
-  if (has("S") && has("A")) list.push(["Soprano and alto", ["S", "A"]]);
-  if (has("T") && has("B")) list.push(["Tenor and bass", ["T", "B"]]);
-  list.forEach(([label, set]) => {
-    const b = document.createElement("button");
-    b.className = "chip";
-    b.textContent = label;
-    b.addEventListener("click", () => {
-      VOICES.forEach(k => { if (has(k)) on[k] = set.includes(k); });
-      if (has("P") && label === "All parts") on.P = true;
-      syncParts();
-    });
-    presets.appendChild(b);
-  });
-
-  $("bakedNote").hidden = mode !== "baked";
-
-  const vols = $("vols");
-  vols.innerHTML = "";
-  keys.forEach(k => {
-    const row = document.createElement("div");
-    row.className = "vol-row";
-    const id = "vol-" + k;
-    row.innerHTML = `<label for="${id}">${PARTS[k].name}</label><input id="${id}" type="range" min="0" max="1.5" step="0.01" value="${vol[k]}" style="accent-color: var(--${k})">`;
-    row.querySelector("input").addEventListener("input", e => { vol[k] = parseFloat(e.target.value); updateGains(); savePrefs(); });
-    vols.appendChild(row);
-  });
-
-  $("scrub").max = duration.toFixed(2);
-  renderLoop();
-  renderPlay();
-}
-
-function syncParts() {
-  document.querySelectorAll("#parts .part").forEach((b, i) => b.setAttribute("aria-pressed", on[keys[i]] ? "true" : "false"));
-  updateGains();
-  savePrefs();
-  const anyVoice = VOICES.some(k => keys.includes(k) && on[k]);
-  if (mode === "baked" && !anyVoice) setStatus("Turn on at least one part to hear this song.");
-  else if (!keys.some(k => on[k])) setStatus("Everything is turned off.");
-  else setStatus("");
-}
-
-function gainFor(k) {
-  const activeVoices = VOICES.filter(v => keys.includes(v) && on[v]).length;
-  let g = on[k] ? vol[k] : 0;
-  // Baked-in accompaniment adds up across parts; divide so it stays at one part's level.
-  if (mode === "baked" && VOICES.includes(k)) g = g / Math.max(activeVoices, 1);
-  return g;
-}
-function updateGains(immediate) {
-  if (!ctx) return;
-  keys.forEach(k => {
-    const g = gainFor(k);
-    if (immediate) gains[k].gain.value = g;
-    else gains[k].gain.setTargetAtTime(g, ctx.currentTime, 0.015);
-  });
-}
-
-/* ---------- playback ---------- */
-function loopActive() { return loop.a !== null && loop.b !== null && loop.b - loop.a > 0.3; }
-
-function position() {
-  if (!playing) return offset;
-  let p = offset + Math.max(0, ctx.currentTime - startAt);
-  if (loopActive() && p >= loop.b) p = loop.a + ((p - loop.a) % (loop.b - loop.a));
-  return Math.min(p, duration);
-}
-
-function play() {
-  if (!keys.length) return;
-  getCtx();
-  if (ctx.state !== "running") ctx.resume();
-  if (offset >= duration - 0.05) offset = 0;
-  if (loopActive() && (offset < loop.a || offset >= loop.b)) offset = loop.a;
-  const id = ++playId;
-  const t0 = ctx.currentTime + 0.06;
-  let longest = null;
-  sources = keys.map(k => {
-    const s = ctx.createBufferSource();
-    s.buffer = bufs[k];
-    if (loopActive()) { s.loop = true; s.loopStart = loop.a; s.loopEnd = Math.min(loop.b, bufs[k].duration); }
-    s.connect(gains[k]);
-    s.start(t0, Math.min(offset, bufs[k].duration));
-    if (!longest || bufs[k].duration > longest.buffer.duration) longest = s;
-    return s;
-  });
-  longest.onended = () => {
-    if (id !== playId || !playing) return;
-    playing = false; offset = 0; sources = [];
-    renderPlay(); tick();
-  };
-  startAt = t0;
-  playing = true;
-  renderPlay();
-  requestAnimationFrame(tick);
-}
-
-function stopSources() {
-  playId++;
-  sources.forEach(s => { try { s.onended = null; s.stop(); } catch (e) {} });
-  sources = [];
-}
-
-function pause() {
-  offset = position();
-  stopSources();
-  playing = false;
-  renderPlay();
-  tick();
-}
-
-function seek(t) {
-  const was = playing;
-  if (was) { offset = position(); stopSources(); playing = false; }
-  offset = Math.max(0, Math.min(t, duration));
-  if (was) play(); else tick();
-}
-
-function renderPlay() {
-  const b = $("playBtn");
-  b.innerHTML = playing ? PAUSE_ICON : PLAY_ICON;
-  b.setAttribute("aria-label", playing ? "Pause" : "Play");
-}
-
-function fmt(t) {
-  t = Math.max(0, t);
-  const m = Math.floor(t / 60), s = Math.floor(t % 60);
-  return m + ":" + String(s).padStart(2, "0");
-}
-
-function tick() {
-  const p = position();
-  if (!dragging) $("scrub").value = p.toFixed(2);
-  $("time").textContent = fmt(dragging ? parseFloat($("scrub").value) : p) + " / " + fmt(duration);
-  if (playing) requestAnimationFrame(tick);
-}
-
-/* ---------- loop ---------- */
-function renderLoop() {
-  const band = $("loopBand"), state = $("loopState");
-  const active = loopActive();
-  $("loopClear").hidden = loop.a === null && loop.b === null;
-  if (active && duration) {
-    band.style.display = "block";
-    band.style.left = (loop.a / duration * 100) + "%";
-    band.style.width = ((loop.b - loop.a) / duration * 100) + "%";
-    state.textContent = `Looping ${fmt(loop.a)} to ${fmt(loop.b)}`;
-  } else {
-    band.style.display = "none";
-    if (loop.a !== null) state.textContent = `Loop starts at ${fmt(loop.a)}. Tap "Loop ends here" to finish it.`;
-    else if (loop.b !== null) state.textContent = `Loop ends at ${fmt(loop.b)}. Tap "Loop starts here" to finish it.`;
-    else state.textContent = "";
-  }
-}
-function setLoop(which) {
-  const p = position();
-  loop[which] = p;
-  if (loop.a !== null && loop.b !== null && loop.b <= loop.a) {
-    if (which === "a") loop.b = null; else loop.a = null;
-  }
-  renderLoop();
-  if (playing) seek(position());
-}
-
-/* ---------- download the current mix ---------- */
-function encodeWav(buf) {
-  const d = buf.getChannelData(0), n = d.length, sr = buf.sampleRate;
-  const out = new ArrayBuffer(44 + n * 2), view = new DataView(out);
-  const str = (off, s) => { for (let i = 0; i < s.length; i++) view.setUint8(off + i, s.charCodeAt(i)); };
-  str(0, "RIFF"); view.setUint32(4, 36 + n * 2, true); str(8, "WAVEfmt ");
-  view.setUint32(16, 16, true); view.setUint16(20, 1, true); view.setUint16(22, 1, true);
-  view.setUint32(24, sr, true); view.setUint32(28, sr * 2, true);
-  view.setUint16(32, 2, true); view.setUint16(34, 16, true);
-  str(36, "data"); view.setUint32(40, n * 2, true);
-  let peak = 0;
-  for (let i = 0; i < n; i++) peak = Math.max(peak, Math.abs(d[i]));
-  const scale = peak > 1 ? 1 / peak : 1; // avoid clipping if the mix ran hot
-  for (let i = 0; i < n; i++) {
-    const s = Math.max(-1, Math.min(1, d[i] * scale));
-    view.setInt16(44 + i * 2, s < 0 ? s * 0x8000 : s * 0x7FFF, true);
-  }
-  return new Blob([out], { type: "audio/wav" });
-}
-
-async function downloadMix() {
-  if (!keys.length) return;
-  const chosen = keys.filter(k => gainFor(k) > 0);
-  if (!chosen.length) { $("saveState").textContent = "Turn on a part first."; return; }
-  const btn = $("saveBtn");
-  btn.disabled = true;
-  $("saveState").textContent = "Building the file…";
-  try {
-    const sr = ctx.sampleRate;
-    const from = loopActive() ? loop.a : 0;
-    const len = (loopActive() ? loop.b - loop.a : duration);
-    const OAC = window.OfflineAudioContext || window.webkitOfflineAudioContext;
-    const off = new OAC(1, Math.ceil(len * sr), sr);
-    chosen.forEach(k => {
-      const s = off.createBufferSource();
-      s.buffer = bufs[k];
-      const g = off.createGain();
-      g.gain.value = gainFor(k);
-      s.connect(g); g.connect(off.destination);
-      s.start(0, Math.min(from, bufs[k].duration), len);
-    });
-    const rendered = await off.startRendering();
-    const label = chosen.map(k => PARTS[k].letter).join("");
-    const name = `${SONGS[currentSong].title} - ${label}${loopActive() ? " (excerpt)" : ""}.wav`;
-    const url = URL.createObjectURL(encodeWav(rendered));
-    const a = document.createElement("a");
-    a.href = url; a.download = name;
-    document.body.appendChild(a); a.click(); a.remove();
-    setTimeout(() => URL.revokeObjectURL(url), 30000);
-    $("saveState").textContent = "Saved " + name;
-  } catch (e) {
-    $("saveState").textContent = "This browser couldn't build the file. Try it on a computer.";
-  }
-  btn.disabled = false;
-}
-
-/* ---------- wiring ---------- */
-$("saveBtn").addEventListener("click", downloadMix);
-$("playBtn").addEventListener("click", () => playing ? pause() : play());
-$("backBtn").addEventListener("click", () => seek(position() - 10));
-const scrub = $("scrub");
-scrub.addEventListener("pointerdown", () => { dragging = true; });
-scrub.addEventListener("input", () => { dragging = true; tick(); });
-scrub.addEventListener("change", () => { dragging = false; seek(parseFloat(scrub.value)); });
-$("loopStart").addEventListener("click", () => setLoop("a"));
-$("loopEnd").addEventListener("click", () => setLoop("b"));
-$("loopClear").addEventListener("click", () => {
-  loop = { a: null, b: null };
-  renderLoop();
-  if (playing) seek(position());
-});
-document.addEventListener("keydown", e => {
-  if (e.code !== "Space" || !keys.length) return;
-  const tag = (e.target.tagName || "").toLowerCase();
-  if (tag === "input" || tag === "button" || tag === "summary") return;
-  e.preventDefault();
-  playing ? pause() : play();
-});
-
-renderSongs();
-</script>
 </body>
 </html>
